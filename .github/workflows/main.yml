@@ -1,40 +1,41 @@
-name: Build APK & AAB
+name: Build APK Fix
 
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout code
+      - name: Checkout kode
         uses: actions/checkout@v4
-
-      - name: Setup JDK 17
+      
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Download valid gradle-wrapper.jar
+      
+      - name: Generate gradlew wrapper
         run: |
-          mkdir -p gradle/wrapper
-          wget -q https://raw.githubusercontent.com/gradle/gradle/v8.9.0/gradle/wrapper/gradle-wrapper.jar \
-            -O gradle/wrapper/gradle-wrapper.jar || \
-          wget -q https://github.com/gradle/gradle/releases/download/v8.9.0/gradle-8.9-wrapper.jar \
-            -O gradle/wrapper/gradle-wrapper.jar || \
-          true
-          echo "Wrapper jar size: $(wc -c < gradle/wrapper/gradle-wrapper.jar) bytes"
-
-      - name: Grant execute permission
+          # Generate gradle wrapper langsung dari gradle
+          gradle wrapper --gradle-version 8.7
+          
+          # Kasih permission
+          chmod +x gradlew
+          
+          # Verifikasi
+          ls -la gradlew
+      
+      - name: Build APK
+        run: ./gradlew assembleDebug --no-daemon
+      
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/*.apk      - name: Grant execute permission
         run: chmod +x gradlew
 
       - name: Decode Keystore
