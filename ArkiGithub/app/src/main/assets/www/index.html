@@ -1,0 +1,2548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUPER ESTIMATOR RAB | Powered by Kontraktor ArkiDigital</title>
+<style>
+/* ===== RESET & BASE ===== */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0b1120;--bg2:#111827;--card:#1e293b;--card2:#162032;
+  --green:#22c55e;--green2:#16a34a;--blue:#3b82f6;--orange:#f97316;
+  --red:#ef4444;--yellow:#facc15;--purple:#a855f7;
+  --text:#f1f5f9;--text2:#94a3b8;--border:#2d3f55;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ===== LOGIN ===== */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;
+  background:linear-gradient(135deg,#0b1120 0%,#1a2340 50%,#0b1120 100%);}
+.login-box{background:var(--card);border-radius:20px;padding:40px;max-width:400px;width:90%;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);border:1px solid var(--border);}
+.login-logo{text-align:center;margin-bottom:30px;}
+.login-logo .brand{font-size:1.1rem;color:var(--text2);margin-top:8px;letter-spacing:1px;}
+.login-logo h1{font-size:1.6rem;color:var(--green);margin:8px 0 2px;}
+.login-form input{width:100%;padding:12px 16px;background:#0f172a;border:1px solid var(--border);
+  border-radius:10px;color:var(--text);font-size:14px;margin-bottom:14px;transition:.2s;}
+.login-form input:focus{border-color:var(--green);outline:none;box-shadow:0 0 0 2px #22c55e30;}
+.btn-login{width:100%;padding:12px;background:linear-gradient(135deg,var(--green),var(--green2));
+  border:none;border-radius:10px;color:white;font-weight:700;font-size:15px;cursor:pointer;
+  transition:.2s;margin-top:4px;}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 20px #22c55e40;}
+.login-err{color:var(--red);font-size:13px;text-align:center;margin-top:10px;display:none;}
+.powered{text-align:center;margin-top:24px;font-size:11px;color:var(--text2);}
+.powered span{color:var(--green);font-weight:700;}
+
+/* ===== MAIN APP ===== */
+#appScreen{display:none;}
+.topbar{background:var(--card2);border-bottom:1px solid var(--border);padding:0 20px;
+  display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;}
+.topbar .logo{display:flex;align-items:center;gap:12px;}
+.topbar .logo .title{font-size:1rem;font-weight:700;color:var(--green);}
+.topbar .logo .sub{font-size:10px;color:var(--text2);}
+.topbar .right{display:flex;align-items:center;gap:12px;}
+.badge-user{background:#22c55e20;color:var(--green);border:1px solid #22c55e50;padding:4px 12px;
+  border-radius:20px;font-size:12px;font-weight:600;}
+.btn-logout{background:#ef444420;color:var(--red);border:1px solid #ef444450;padding:5px 14px;
+  border-radius:20px;font-size:12px;cursor:pointer;transition:.2s;}
+.btn-logout:hover{background:#ef444440;}
+
+.tabs{display:flex;gap:4px;background:var(--card2);padding:8px 20px;border-bottom:1px solid var(--border);
+  overflow-x:auto;flex-wrap:nowrap;}
+.tab{padding:8px 18px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:500;
+  white-space:nowrap;transition:.2s;color:var(--text2);border:1px solid transparent;}
+.tab.active{background:var(--green);color:white;border-color:var(--green);}
+.tab:hover:not(.active){background:#22c55e15;color:var(--green);}
+
+.main{padding:20px;max-width:1400px;margin:auto;}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+
+/* ===== CARDS ===== */
+.card{background:var(--card);border-radius:16px;padding:20px;margin-bottom:16px;
+  border:1px solid var(--border);}
+.card-light{background:#f8fafc;color:#1e293b;border-radius:12px;padding:16px;border:1px solid #e2e8f0;}
+.section-title{font-size:1rem;font-weight:700;color:var(--green);border-left:4px solid var(--green);
+  padding-left:10px;margin-bottom:14px;}
+
+/* ===== FORM ===== */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:12px;}
+.form-group label{display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;
+  background:#0f172a;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;transition:.2s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:var(--green);outline:none;}
+.form-group select option{background:#1e293b;}
+
+/* ===== BUTTONS ===== */
+.btn{padding:10px 20px;border:none;border-radius:30px;font-weight:700;cursor:pointer;
+  transition:.2s;font-size:13px;display:inline-flex;align-items:center;gap:6px;}
+.btn-green{background:linear-gradient(135deg,var(--green),var(--green2));color:white;}
+.btn-green:hover{transform:scale(1.02);box-shadow:0 4px 14px #22c55e50;}
+.btn-blue{background:var(--blue);color:white;}
+.btn-red{background:var(--red);color:white;}
+.btn-orange{background:var(--orange);color:white;}
+.btn-purple{background:var(--purple);color:white;}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+
+/* ===== TABLES ===== */
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th,td{border:1px solid #2d3f55;padding:8px 10px;text-align:left;}
+.card-light th,.card-light td{border-color:#cbd5e1;}
+th{background:#2d3f55;color:white;font-weight:600;}
+.card-light th{background:#e2e8f0;color:#1e293b;}
+tr:nth-child(even) td{background:#ffffff08;}
+.card-light tr:nth-child(even) td{background:#f1f5f9;}
+td strong{color:var(--green);}
+.card-light td strong{color:#0f5;}
+
+/* ===== GRID LAYOUTS ===== */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.g2,.g3,.g4{grid-template-columns:1fr;}.tabs{flex-wrap:wrap;}}
+
+/* ===== STAT CARDS ===== */
+.stat-card{background:linear-gradient(135deg,#1a3a5c,#162032);border-radius:12px;
+  padding:14px;text-align:center;border:1px solid #2a4a6a;}
+.stat-card .slabel{font-size:10px;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+.stat-card .sval{font-size:1.4rem;font-weight:700;font-family:monospace;color:var(--green);}
+.stat-card .sunit{font-size:10px;color:var(--text2);}
+
+/* ===== ALERTS ===== */
+.alert{padding:12px 16px;border-radius:10px;margin:10px 0;font-size:13px;display:flex;gap:10px;align-items:flex-start;}
+.alert-warn{background:#f9731615;color:#fb923c;border-left:4px solid var(--orange);}
+.alert-danger{background:#ef444415;color:#f87171;border-left:4px solid var(--red);}
+.alert-success{background:#22c55e15;color:#4ade80;border-left:4px solid var(--green);}
+.alert-info{background:#3b82f615;color:#60a5fa;border-left:4px solid var(--blue);}
+
+/* ===== CANVAS ===== */
+canvas{border-radius:8px;border:1px solid #ddd;background:white;max-width:100%;}
+.canvas-wrap{overflow-x:auto;background:white;border-radius:10px;padding:10px;}
+
+/* ===== STRUKTUR WARNING ===== */
+.warn-panel{background:#2a1515;border:2px solid var(--red);border-radius:12px;padding:16px;margin:12px 0;}
+.warn-panel h4{color:var(--red);margin-bottom:8px;}
+.warn-item{color:#fca5a5;font-size:12px;margin:4px 0;padding-left:14px;position:relative;}
+.warn-item::before{content:"⚠";position:absolute;left:0;}
+
+.ok-panel{background:#0f2a1a;border:2px solid var(--green);border-radius:12px;padding:16px;margin:12px 0;}
+.ok-panel h4{color:var(--green);margin-bottom:8px;}
+
+/* ===== LOADING ===== */
+.spinner{border:3px solid #1e293b;border-top:3px solid var(--green);border-radius:50%;
+  width:32px;height:32px;animation:spin 1s linear infinite;margin:auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== DENAH AI ===== */
+#denahAI{background:#f8fafc;border-radius:12px;min-height:300px;padding:16px;margin-top:12px;
+  font-size:13px;line-height:1.7;color:#1e293b;white-space:pre-wrap;}
+
+/* ===== SKALA ===== */
+.skala-info{font-size:11px;color:var(--text2);margin-top:6px;}
+
+/* ===== PRINT ===== */
+@media print{
+  #loginScreen{display:none!important;}
+  .topbar,.tabs,.btn,.btn-row{display:none!important;}
+  .card{background:white!important;color:#1e293b!important;border:1px solid #ddd!important;}
+  .card-light{background:white!important;}
+  th{background:#e2e8f0!important;color:#1e293b!important;}
+  body{background:white!important;}
+  .tab-panel{display:block!important;}
+}
+
+/* ===== RAB TABLE ===== */
+.rab-section{margin-bottom:20px;}
+.rab-header{background:linear-gradient(135deg,var(--green2),#15803d);color:white;
+  padding:10px 14px;border-radius:8px 8px 0 0;font-weight:700;font-size:13px;}
+.rab-table{width:100%;border-collapse:collapse;font-size:12px;}
+.rab-table th{background:#e2e8f0;color:#1e293b;padding:7px 10px;text-align:center;}
+.rab-table td{border:1px solid #cbd5e1;padding:7px 10px;background:white;color:#1e293b;}
+.rab-table td:nth-child(1){font-weight:500;}
+.rab-table td:nth-child(4),.rab-table td:nth-child(5){text-align:right;font-family:monospace;}
+.rab-subtotal{background:#f0fdf4!important;font-weight:700;color:#15803d!important;}
+.rab-total-row{background:#dcfce7!important;font-weight:700;font-size:13px;color:#15803d!important;}
+
+/* ===== LEGEND ===== */
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);}
+.leg-dot{width:14px;height:14px;border-radius:3px;flex-shrink:0;}
+
+/* Koefisien table */
+.koef-table{font-size:12px;}
+.koef-table td:nth-child(2),.koef-table td:nth-child(3){text-align:right;font-family:monospace;}
+</style>
+</head>
+<body>
+
+<!-- ============================== LOGIN ============================== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div style="font-size:3rem;">🏗️</div>
+      <h1>SUPER ESTIMATOR RAB</h1>
+      <div class="brand">POWERED BY KONTRAKTOR ARKIDIGITAL</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px;">Standar SNI 2024 · Koefisien Presisi · AI Denah</div>
+    </div>
+    <div class="login-form">
+      <input type="text" id="inpUser" placeholder="Username" autocomplete="off">
+      <input type="password" id="inpPass" placeholder="Password">
+      <button class="btn-login" onclick="doLogin()">🔐 MASUK</button>
+    </div>
+    <div class="login-err" id="loginErr">❌ Username atau password salah!</div>
+    <div class="powered">Powered by <span>Kontraktor ArkiDigital</span> © 2025</div>
+  </div>
+</div>
+
+<!-- ============================== APP ============================== -->
+<div id="appScreen">
+  <div class="topbar">
+    <div class="logo">
+      <span style="font-size:1.6rem;">🏗️</span>
+      <div>
+        <div class="title">SUPER ESTIMATOR RAB</div>
+        <div class="sub">POWERED BY KONTRAKTOR ARKIDIGITAL · SNI 2024</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="badge-user" id="badgeUser">👤 kontraktor</div>
+      <button class="btn-logout" onclick="doLogout()">🚪 Keluar</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('input')">📐 Data Input</div>
+    <div class="tab" onclick="switchTab('struktur')">🦶 Struktur & Pondasi</div>
+    <div class="tab" onclick="switchTab('dinding')">🧱 Dinding & Finishing</div>
+    <div class="tab" onclick="switchTab('mep')">⚡ MEP & Sanitasi</div>
+    <div class="tab" onclick="switchTab('atap')">🏠 Atap & Plafon</div>
+    <div class="tab" onclick="switchTab('rab')">💰 RAB Lengkap</div>
+    <div class="tab" onclick="switchTab('denah')">🗺️ Denah AI</div>
+    <div class="tab" onclick="switchTab('koef')">📋 Koefisien SNI</div>
+    <div class="tab" onclick="switchTab('material20')">🧮 20 Komponen Material</div>
+  </div>
+
+  <div class="main">
+
+    <!-- ===== TAB INPUT ===== -->
+    <div class="tab-panel active" id="tab-input">
+      <div class="card">
+        <div class="section-title">📐 Data Dimensi Bangunan</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Panjang (m)</label><input type="number" id="panjang" value="10" step="0.5" min="3"></div>
+          <div class="form-group"><label>Lebar (m)</label><input type="number" id="lebar" value="8" step="0.5" min="3"></div>
+          <div class="form-group"><label>Tinggi Dinding/Lantai (m)</label><input type="number" id="tinggi" value="3.5" step="0.1" min="2.5"></div>
+          <div class="form-group"><label>Jumlah Lantai</label><input type="number" id="lantai" value="1" min="1" max="5"></div>
+          <div class="form-group"><label>Kedalaman Pondasi (m)</label><input type="number" id="dalamPondasi" value="0.8" step="0.1" min="0.5"></div>
+          <div class="form-group"><label>Jenis Tanah</label>
+            <select id="jenisTanah">
+              <option value="keras">Tanah Keras (daya dukung ≥1.5 kg/cm²)</option>
+              <option value="sedang" selected>Tanah Sedang (0.8–1.5 kg/cm²)</option>
+              <option value="lunak">Tanah Lunak (&lt;0.8 kg/cm²)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">🏗️ Spesifikasi Struktur</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Mutu Beton</label>
+            <select id="mutoBeton">
+              <option value="fc15">fc' 15 MPa (K-175) – Rumah Ringan</option>
+              <option value="fc21" selected>fc' 21 MPa (K-250) – Standar</option>
+              <option value="fc25">fc' 25 MPa (K-300) – Bertingkat</option>
+              <option value="fc30">fc' 30 MPa (K-350) – Tinggi</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Besi Utama Kolom</label>
+            <select id="besiKolom">
+              <option value="10">D10 (tulangan ringan)</option>
+              <option value="13" selected>D13 (standar rumah)</option>
+              <option value="16">D16 (rumah bertingkat)</option>
+              <option value="19">D19 (bangunan berat)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Besi Sengkang</label>
+            <select id="besiSengkang">
+              <option value="6">Ø6 – Ringan</option>
+              <option value="8" selected>Ø8 – Standar</option>
+              <option value="10">Ø10 – Berat</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Kolom Praktis (cm × cm)</label>
+            <select id="dimKolom">
+              <option value="15x15">15×15 – 1 lantai ringan</option>
+              <option value="20x20" selected>20×20 – 1–2 lantai</option>
+              <option value="25x25">25×25 – 2–3 lantai</option>
+              <option value="30x30">30×30 – 3+ lantai</option>
+              <option value="30x40">30×40 – Kolom utama</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Sloof (cm × cm)</label>
+            <select id="dimSloof">
+              <option value="15x20">15×20 – Ringan</option>
+              <option value="20x25" selected>20×25 – Standar</option>
+              <option value="25x30">25×30 – Berat</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Ring Balok (cm × cm)</label>
+            <select id="dimRing">
+              <option value="12x15">12×15 – Ringan</option>
+              <option value="15x20" selected>15×20 – Standar</option>
+              <option value="20x25">20×25 – Berat</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">🧱 Material & Finishing</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Jenis Dinding</label>
+            <select id="jenisDinding">
+              <option value="bata_merah">Bata Merah (SNI 15-2094)</option>
+              <option value="bata_ringan">Bata Ringan/Hebel (AAC)</option>
+              <option value="batako">Batako Press</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Jenis Atap</label>
+            <select id="jenisAtap">
+              <option value="genteng_metal">Genteng Metal (7 kg/m²)</option>
+              <option value="genteng_tanah">Genteng Tanah Liat (50 kg/m²)</option>
+              <option value="genteng_beton">Genteng Beton (40 kg/m²)</option>
+              <option value="asbes">Atap Asbes Gelombang</option>
+              <option value="zincalume">Zincalume/Spandek</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Kuda-kuda Atap</label>
+            <select id="rangkaAtap">
+              <option value="baja_ringan">Baja Ringan SNI</option>
+              <option value="kayu_kelas_2">Kayu Kelas II</option>
+              <option value="kayu_kelas_1">Kayu Kelas I (Jati/Merbau)</option>
+              <option value="baja_wf">Baja WF (Bentang >10m)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Plafon</label>
+            <select id="jenisPlafon">
+              <option value="gypsum">Gypsum Board 9mm</option>
+              <option value="kalsiboard">Kalsiboard 4mm</option>
+              <option value="pvc">Panel PVC</option>
+              <option value="triplek">Triplek 4mm</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Keramik Lantai</label>
+            <select id="jenisKeramik">
+              <option value="40x40">40×40 cm (Standard)</option>
+              <option value="60x60">60×60 cm (Premium)</option>
+              <option value="granite">Granit 60×60 (Premium)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Cat Tembok</label>
+            <select id="jenisCat">
+              <option value="ekonomis">Ekonomis (Vinilex/Setara)</option>
+              <option value="medium" selected>Medium (Dulux/Nippon)</option>
+              <option value="premium">Premium (Jotun/Propan)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">🏡 Fasilitas Tambahan</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Kamar Tidur</label><input type="number" id="jmlKT" value="3" min="1" max="10"></div>
+          <div class="form-group"><label>Kamar Mandi</label><input type="number" id="jmlKM" value="2" min="1" max="6"></div>
+          <div class="form-group"><label>Kanopi (m²)</label><input type="number" id="kanopi" value="0" step="1" min="0"></div>
+          <div class="form-group"><label>Pagar (m)</label><input type="number" id="pagar" value="0" step="1" min="0"></div>
+          <div class="form-group"><label>Carport (m²)</label><input type="number" id="carport" value="0" step="1" min="0"></div>
+          <div class="form-group"><label>Kitchen Set</label>
+            <select id="kitchenSet">
+              <option value="tidak">Tidak</option>
+              <option value="sederhana">Sederhana (3m)</option>
+              <option value="standard">Standard (5m)</option>
+              <option value="premium">Premium (7m+)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Jenis Instalasi Listrik</label>
+            <select id="jenisListrik">
+              <option value="900">900 VA – Rumah Kecil</option>
+              <option value="1300" selected>1300 VA – Standar</option>
+              <option value="2200">2200 VA – Rumah Besar</option>
+              <option value="3500">3500 VA – Mewah</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Septictank</label>
+            <select id="septictank">
+              <option value="bio">Biotank Siap Pakai</option>
+              <option value="bata">Septictank Bata Cor</option>
+              <option value="tidak">Tidak (Ada IPAL)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">👷 Upah Tenaga Kerja</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Upah Kepala Tukang/hari</label><input type="number" id="upahKepala" value="200000" step="10000"></div>
+          <div class="form-group"><label>Upah Tukang/hari</label><input type="number" id="upahTukang" value="150000" step="10000"></div>
+          <div class="form-group"><label>Upah Kenek/hari</label><input type="number" id="upahKenek" value="100000" step="5000"></div>
+          <div class="form-group"><label>Overhead & Profit (%)</label><input type="number" id="overhead" value="15" min="5" max="30"></div>
+          <div class="form-group"><label>PPN (%)</label><input type="number" id="ppn" value="11" min="0" max="15"></div>
+          <div class="form-group"><label>Lokasi Proyek</label>
+            <select id="lokasiProyek">
+              <option value="1.0">Jakarta/Surabaya (Indeks 1.00)</option>
+              <option value="0.95">Bandung/Semarang (0.95)</option>
+              <option value="0.90" selected>Kota Sedang (0.90)</option>
+              <option value="0.85">Kota Kecil (0.85)</option>
+              <option value="0.80">Pedesaan (0.80)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-green" onclick="hitungSemua()">🔨 HITUNG SEMUA (SNI)</button>
+          <button class="btn btn-blue" onclick="switchTab('rab');hitungSemua()">💰 LIHAT RAB</button>
+          <button class="btn btn-orange" onclick="window.print()">🖨️ CETAK / PDF</button>
+          <button class="btn btn-red" onclick="resetForm()">🔄 RESET</button>
+        </div>
+      </div>
+
+      <!-- Ringkasan Cepat -->
+      <div class="card" id="quickSummary" style="display:none;">
+        <div class="section-title">📊 Ringkasan Perhitungan</div>
+        <div class="g4" id="statCards"></div>
+        <div id="warningPanel" style="margin-top:14px;"></div>
+      </div>
+    </div>
+
+    <!-- ===== TAB STRUKTUR ===== -->
+    <div class="tab-panel" id="tab-struktur">
+      <div id="hasilStruktur"><div class="alert alert-info">ℹ️ Klik "HITUNG SEMUA" di tab Data Input terlebih dahulu</div></div>
+    </div>
+
+    <!-- ===== TAB DINDING ===== -->
+    <div class="tab-panel" id="tab-dinding">
+      <div id="hasilDinding"><div class="alert alert-info">ℹ️ Klik "HITUNG SEMUA" di tab Data Input terlebih dahulu</div></div>
+    </div>
+
+    <!-- ===== TAB MEP ===== -->
+    <div class="tab-panel" id="tab-mep">
+      <div id="hasilMEP"><div class="alert alert-info">ℹ️ Klik "HITUNG SEMUA" di tab Data Input terlebih dahulu</div></div>
+    </div>
+
+    <!-- ===== TAB ATAP ===== -->
+    <div class="tab-panel" id="tab-atap">
+      <div id="hasilAtap"><div class="alert alert-info">ℹ️ Klik "HITUNG SEMUA" di tab Data Input terlebih dahulu</div></div>
+    </div>
+
+    <!-- ===== TAB RAB ===== -->
+    <div class="tab-panel" id="tab-rab">
+      <div id="hasilRAB"><div class="alert alert-info">ℹ️ Klik "HITUNG SEMUA" di tab Data Input terlebih dahulu</div></div>
+    </div>
+
+    <!-- ===== TAB DENAH AI ===== -->
+    <div class="tab-panel" id="tab-denah">
+      <div class="card">
+        <div class="section-title">🗺️ Generator Denah Rumah dengan AI (Gemini)</div>
+        <div class="alert alert-info">ℹ️ Masukkan Gemini API Key Anda. Data bangunan dari form input akan dikirim ke AI untuk menghasilkan denah dan layout ruangan lengkap dengan skala.</div>
+        <div class="form-grid" style="grid-template-columns:1fr 200px;">
+          <div class="form-group">
+            <label>🔑 Gemini API Key (google.generativeai)</label>
+            <input type="password" id="geminiKey" placeholder="Masukkan API Key Gemini Anda...">
+          </div>
+          <div class="form-group" style="display:flex;align-items:flex-end;">
+            <button class="btn btn-purple" onclick="generateDenah()" style="width:100%;">🤖 Generate Denah AI</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Preferensi Denah</label>
+            <select id="preferensiDenah">
+              <option value="minimalis">Minimalis Modern</option>
+              <option value="klasik">Klasik Tradisional</option>
+              <option value="mediterranean">Mediterranean</option>
+              <option value="industrial">Industrial</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Zona Orientasi Utama</label>
+            <select id="orientasi">
+              <option value="utara">Pintu Masuk Menghadap Utara</option>
+              <option value="selatan">Pintu Masuk Menghadap Selatan</option>
+              <option value="timur">Pintu Masuk Menghadap Timur</option>
+              <option value="barat">Pintu Masuk Menghadap Barat</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Prioritas Ruangan</label>
+            <select id="prioritasRuang">
+              <option value="privasi">Privasi (Kamar Tidur Terisolasi)</option>
+              <option value="sosial">Sosial (Ruang Tamu Luas)</option>
+              <option value="keluarga">Keluarga (Ruang Keluarga Sentral)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="denahLoading" style="display:none;text-align:center;padding:40px;">
+          <div class="spinner" style="margin-bottom:16px;"></div>
+          <div style="color:var(--text2);">AI sedang menganalisis dan merancang denah rumah Anda...</div>
+        </div>
+
+        <!-- Canvas Denah Arsitektur -->
+        <div id="denahCanvasWrap" style="margin-top:16px;">
+          <canvas id="denahCanvas" width="900" height="700" style="border-radius:8px;border:2px solid #ddd;background:#fff;max-width:100%;"></canvas>
+          <div class="skala-info" id="skalaInfo"></div>
+          <div class="legend" id="denahLegend"></div>
+        </div>
+
+        <div id="denahAI"></div>
+      </div>
+    </div>
+
+    <!-- ===== TAB KOEFISIEN SNI ===== -->
+    <div class="tab-panel" id="tab-koef">
+      <div class="card">
+        <div class="section-title">📋 Tabel Koefisien SNI 2024 – Referensi Perhitungan</div>
+        <div class="g2">
+          <div class="card-light">
+            <div class="section-title" style="color:#1e293b;">🧱 Pasangan Bata Merah (SNI 7394:2008)</div>
+            <table class="koef-table"><thead><tr><th>Komponen</th><th>Koef</th><th>Satuan</th></tr></thead>
+            <tbody>
+              <tr><td>Bata Merah 5×11×22</td><td>70</td><td>bh/m²</td></tr>
+              <tr><td>Semen Portland</td><td>0.2176</td><td>sak/m²</td></tr>
+              <tr><td>Pasir Pasang</td><td>0.0278</td><td>m³/m²</td></tr>
+              <tr><td>Tukang Batu</td><td>0.1000</td><td>org/m²</td></tr>
+              <tr><td>Kepala Tukang</td><td>0.0100</td><td>org/m²</td></tr>
+              <tr><td>Pekerja/Kenek</td><td>0.3000</td><td>org/m²</td></tr>
+              <tr><td>Mandor</td><td>0.0150</td><td>org/m²</td></tr>
+            </tbody></table>
+          </div>
+          <div class="card-light">
+            <div class="section-title" style="color:#1e293b;">🏗️ Beton fc'21 MPa (SNI 7394:2008)</div>
+            <table class="koef-table"><thead><tr><th>Komponen</th><th>Koef</th><th>Satuan</th></tr></thead>
+            <tbody>
+              <tr><td>Semen Portland 50kg</td><td>7.98</td><td>sak/m³</td></tr>
+              <tr><td>Pasir Beton</td><td>0.623</td><td>m³/m³</td></tr>
+              <tr><td>Split 2/3</td><td>0.958</td><td>m³/m³</td></tr>
+              <tr><td>Air</td><td>215</td><td>liter/m³</td></tr>
+              <tr><td>Tukang Batu</td><td>0.275</td><td>org/m³</td></tr>
+              <tr><td>Tukang Besi</td><td>0.275</td><td>org/m³</td></tr>
+              <tr><td>Pekerja/Kenek</td><td>1.650</td><td>org/m³</td></tr>
+              <tr><td>Mandor</td><td>0.083</td><td>org/m³</td></tr>
+            </tbody></table>
+          </div>
+          <div class="card-light">
+            <div class="section-title" style="color:#1e293b;">🪨 Pondasi Batu Kali (SNI 7394)</div>
+            <table class="koef-table"><thead><tr><th>Komponen</th><th>Koef</th><th>Satuan</th></tr></thead>
+            <tbody>
+              <tr><td>Batu Belah 15/20</td><td>1.200</td><td>m³/m³</td></tr>
+              <tr><td>Semen Portland</td><td>2.828</td><td>sak/m³</td></tr>
+              <tr><td>Pasir Pasang</td><td>0.485</td><td>m³/m³</td></tr>
+              <tr><td>Tukang Batu</td><td>0.750</td><td>org/m³</td></tr>
+              <tr><td>Pekerja</td><td>1.500</td><td>org/m³</td></tr>
+              <tr><td>Mandor</td><td>0.075</td><td>org/m³</td></tr>
+            </tbody></table>
+          </div>
+          <div class="card-light">
+            <div class="section-title" style="color:#1e293b;">🦶 Footplate / Cakar Ayam (SNI)</div>
+            <table class="koef-table"><thead><tr><th>Komponen</th><th>Koef</th><th>Satuan</th></tr></thead>
+            <tbody>
+              <tr><td>Besi Tulangan (D13)</td><td>147</td><td>kg/m³</td></tr>
+              <tr><td>Kawat Bendrat</td><td>2.2</td><td>kg/m³</td></tr>
+              <tr><td>Semen Portland</td><td>8.68</td><td>sak/m³</td></tr>
+              <tr><td>Pasir Beton</td><td>0.623</td><td>m³/m³</td></tr>
+              <tr><td>Split</td><td>0.958</td><td>m³/m³</td></tr>
+              <tr><td>Tukang Beton</td><td>0.350</td><td>org/m³</td></tr>
+              <tr><td>Tukang Besi</td><td>0.350</td><td>org/m³</td></tr>
+            </tbody></table>
+          </div>
+          <div class="card-light">
+            <div class="section-title" style="color:#1e293b;">🏠 Atap & Plafon (SNI 7394)</div>
+            <table class="koef-table"><thead><tr><th>Komponen</th><th>Koef</th><th>Satuan</th></tr></thead>
+            <tbody>
+              <tr><td>Genteng Metal</td><td>16.00</td><td>lbr/m²</td></tr>
+              <tr><td>Genteng Tanah Liat</td><td>25.00</td><td>bh/m²</td></tr>
+              <tr><td>Genteng Beton</td><td>10.00</td><td>bh/m²</td></tr>
+              <tr><td>Baja Ringan C75</td><td>4.50</td><td>kg/m²</td></tr>
+              <tr><td>Gypsum Board 9mm</td><td>1.05</td><td>lbr/m²</td></tr>
+              <tr><td>Hollow 40x40</td><td>0.85</td><td>btg/m²</td></tr>
+              <tr><td>Skrup/Paku</td><td>15</td><td>bh/m²</td></tr>
+            </tbody></table>
+          </div>
+          <div class="card-light">
+            <div class="section-title" style="color:#1e293b;">🎨 Plesteran & Acian (SNI 7394)</div>
+            <table class="koef-table"><thead><tr><th>Komponen</th><th>Koef</th><th>Satuan</th></tr></thead>
+            <tbody>
+              <tr><td>Semen Plester</td><td>0.1750</td><td>sak/m²</td></tr>
+              <tr><td>Pasir Plester</td><td>0.0220</td><td>m³/m²</td></tr>
+              <tr><td>Semen Acian</td><td>0.0600</td><td>sak/m²</td></tr>
+              <tr><td>Tukang Plester</td><td>0.0600</td><td>org/m²</td></tr>
+              <tr><td>Pekerja</td><td>0.2000</td><td>org/m²</td></tr>
+              <tr><td>Cat Tembok</td><td>0.1800</td><td>liter/m²</td></tr>
+              <tr><td>Cat Dasar</td><td>0.0600</td><td>liter/m²</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+        <div class="alert alert-info" style="margin-top:16px;">
+          📚 Referensi: SNI 7394:2008 (Tata Cara Perhitungan Harga Satuan), SNI 2847:2019 (Beton Struktural), SNI 1726:2019 (Ketahanan Gempa), SNI 03-2835-2002 (Pondasi), PUPP 2016 (Pedoman Umum Pengadaan Pekerjaan)
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+
+    <!-- ===== TAB MATERIAL 20 KOMPONEN ===== -->
+    <div class="tab-panel" id="tab-material20" style="padding:20px;max-width:1400px;margin:auto;">
+      <div class="card">
+        <div class="section-title">🧮 Kebutuhan 20 Komponen Material (SNI 2024)</div>
+        <div class="alert alert-info">ℹ️ Klik <strong>"HITUNG SEMUA"</strong> di tab Data Input, lalu kembali ke tab ini untuk melihat rincian lengkap 20 komponen material berikut logika perhitungannya.</div>
+        <div class="btn-row" style="margin-bottom:14px;">
+          <button class="btn btn-green" onclick="hitungSemua();renderMaterial20();">🔄 Hitung & Tampilkan</button>
+          <button class="btn btn-orange" onclick="window.print()">🖨️ Cetak</button>
+        </div>
+        <div id="material20Content">
+          <div style="text-align:center;padding:40px;color:var(--text2);">⬆️ Klik "Hitung & Tampilkan" untuk melihat 20 komponen material</div>
+        </div>
+      </div>
+    </div>
+
+
+  <!-- FOOTER -->
+  <div style="text-align:center;padding:20px;color:var(--text2);font-size:11px;border-top:1px solid var(--border);">
+    🏗️ <strong style="color:var(--green);">SUPER ESTIMATOR RAB</strong> | Powered by <strong>Kontraktor ArkiDigital</strong> © 2025 | Standar SNI 2024 | v3.0 Pro
+  </div>
+</div><!-- /appScreen -->
+
+<script>
+// =========================================================
+// AUTH
+// =========================================================
+const CREDS = { kontraktor: "arkidigital" };
+
+function doLogin() {
+  let u = document.getElementById("inpUser").value.trim().toLowerCase();
+  let p = document.getElementById("inpPass").value;
+  if(CREDS[u] && CREDS[u] === p) {
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("appScreen").style.display = "block";
+    document.getElementById("badgeUser").textContent = "👤 " + u;
+    hitungSemua();
+  } else {
+    document.getElementById("loginErr").style.display = "block";
+    setTimeout(()=>document.getElementById("loginErr").style.display="none", 3000);
+  }
+}
+function doLogout() {
+  document.getElementById("loginScreen").style.display = "flex";
+  document.getElementById("appScreen").style.display = "none";
+  document.getElementById("inpPass").value = "";
+}
+document.addEventListener("keypress", e => { if(e.key==="Enter" && document.getElementById("loginScreen").style.display!=="none") doLogin(); });
+
+// =========================================================
+// TABS
+// =========================================================
+function switchTab(id) {
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.getElementById("tab-"+id).classList.add("active");
+  let tabs = document.querySelectorAll(".tab");
+  let map = ["input","struktur","dinding","mep","atap","rab","denah","koef","material20"];
+  let idx = map.indexOf(id);
+  if(idx>=0) tabs[idx].classList.add("active");
+}
+
+function resetForm() { if(confirm("Reset semua data?")) location.reload(); }
+
+// =========================================================
+// HARGA SATUAN MATERIAL (Rp, 2025)
+// =========================================================
+const H = {
+  semen: 67000,          // per sak 50kg
+  pasir_pasang: 280000,  // per m³
+  pasir_beton: 300000,   // per m³
+  split: 320000,         // per m³
+  batu_kali: 250000,     // per m³
+  besi_D10: 10500,       // per kg
+  besi_D13: 11000,       // per kg
+  besi_D16: 11500,       // per kg
+  besi_D19: 12000,       // per kg
+  besi_sengkang: 10000,  // per kg
+  kawat_bendrat: 18000,  // per kg
+  bekisting_triplek: 180000, // per lembar 1220x2440
+  bekisting_kaso: 23000,     // per batang 4/6x400
+  bekisting_paku: 18000,     // per kg
+  bata_merah: 800,           // per biji
+  bata_ringan: 700,          // per biji (10x20x60)
+  batako: 4500,              // per biji
+  mortar_semen: 62000,       // per sak 40kg
+  plester_semen: 67000,      // per sak 50kg
+  pasir_plester: 280000,     // per m³
+  cat_ekonomis: 55000,       // per liter
+  cat_medium: 80000,         // per liter
+  cat_premium: 120000,       // per liter
+  cat_dasar: 40000,          // per liter
+  keramik_40: 90000,         // per m²
+  keramik_60: 150000,        // per m²
+  granite: 220000,           // per m²
+  genteng_metal_lbr: 25000,  // per lembar
+  genteng_tanah_bh: 5500,    // per biji
+  genteng_beton_bh: 12000,   // per biji
+  asbes_lbr: 45000,          // per lembar
+  zincalume_lbr: 55000,      // per lembar
+  baja_ringan_kg: 28000,     // per kg
+  kayu_k2_m3: 4500000,       // per m³
+  kayu_k1_m3: 7000000,       // per m³
+  baja_wf_kg: 18000,         // per kg
+  gypsum_lbr: 85000,         // per lembar 1200x2400
+  kalsiboard_lbr: 95000,     // per lembar
+  pvc_panel: 45000,          // per m²
+  hollow_btg: 38000,         // per batang 4m
+  skrup: 500,                // per biji
+  list_gypsum: 12000,        // per m
+  kabel_NYM: 18000,          // per m (2.5mm²)
+  kabel_NYA: 12000,          // per m
+  saklar_tunggal: 25000,
+  saklar_ganda: 45000,
+  stop_kontak: 35000,
+  lampu_led_9w: 45000,
+  mcb_6a: 75000,
+  mcb_16a: 95000,
+  panel_listrik: 350000,
+  pipa_PVC_4: 45000,         // per m
+  pipa_PVC_3: 35000,
+  pipa_PVC_1: 25000,
+  closet_duduk: 900000,
+  closet_jongkok: 400000,
+  wastafel: 350000,
+  shower: 250000,
+  floor_drain: 45000,
+  septictank_bio: 3500000,
+  septictank_bata: 2000000, // material bata
+  pintu_kayu: 1500000,
+  pintu_KM: 700000,
+  daun_pintu: 800000,
+  kusen_kayu: 600000,
+  jendela_minimalis: 750000,
+  jendela_KM: 300000,
+  kitchen_sederhana: 5000000,
+  kitchen_standard: 10000000,
+  kitchen_premium: 20000000,
+  kanopi_m2: 350000,
+  pagar_m: 850000,
+  carport_m2: 300000,
+};
+
+// =========================================================
+// KOEFISIEN SNI
+// =========================================================
+const K = {
+  // BETON per m³
+  beton: {
+    fc15: { semen:6.90, pasir:0.720, split:1.010 },
+    fc21: { semen:7.98, pasir:0.623, split:0.958 },
+    fc25: { semen:8.68, pasir:0.590, split:0.920 },
+    fc30: { semen:9.80, pasir:0.520, split:0.870 },
+  },
+  // BATA MERAH per m²
+  bata_merah: { bata:70, semen:0.2176, pasir:0.0278 },
+  // BATA RINGAN per m²
+  bata_ringan: { bata:8.3, mortar:0.27 },
+  // BATAKO per m²
+  batako: { bata:12.5, semen:0.1500, pasir:0.0200 },
+  // PLESTER per m² (1:4, tebal 15mm)
+  plester: { semen:0.1750, pasir:0.0220 },
+  // ACIAN per m²
+  acian: { semen:0.0600 },
+  // CAT per m²
+  cat: { cat:0.1800, cat_dasar:0.0600 },
+  // PONDASI per m³ (1:3)
+  pondasi: { batu_kali:1.200, semen:2.828, pasir:0.485 },
+  // ATAP
+  atap: {
+    genteng_metal: 16, genteng_tanah: 25, genteng_beton: 10,
+    asbes: 3.5, zincalume: 3.5
+  },
+  // PLAFON per m²
+  plafon: { gypsum:1.05, hollow:0.85, skrup:15 },
+  // BESI per m³ beton (approx)
+  besi_berat_per_m3: 120, // kg/m³ rata-rata
+};
+
+// =========================================================
+// HELPER FUNCTIONS
+// =========================================================
+function fmtRp(n){ return "Rp "+Math.round(n).toLocaleString("id-ID"); }
+function fmtN(n,d=2){ return (typeof n==="number"?n:parseFloat(n)||0).toFixed(d); }
+function fmtNI(n){ return Math.ceil(parseFloat(n)||0).toLocaleString("id-ID"); }
+
+function getInputs(){
+  return {
+    p: parseFloat(document.getElementById("panjang").value)||10,
+    l: parseFloat(document.getElementById("lebar").value)||8,
+    t: parseFloat(document.getElementById("tinggi").value)||3.5,
+    lt: parseInt(document.getElementById("lantai").value)||1,
+    dalamPondasi: parseFloat(document.getElementById("dalamPondasi").value)||0.8,
+    jenisTanah: document.getElementById("jenisTanah").value,
+    mutoBeton: document.getElementById("mutoBeton").value,
+    besiKolom: parseInt(document.getElementById("besiKolom").value),
+    besiSengkang: parseInt(document.getElementById("besiSengkang").value),
+    dimKolom: document.getElementById("dimKolom").value,
+    dimSloof: document.getElementById("dimSloof").value,
+    dimRing: document.getElementById("dimRing").value,
+    jenisDinding: document.getElementById("jenisDinding").value,
+    jenisAtap: document.getElementById("jenisAtap").value,
+    rangkaAtap: document.getElementById("rangkaAtap").value,
+    jenisPlafon: document.getElementById("jenisPlafon").value,
+    jenisKeramik: document.getElementById("jenisKeramik").value,
+    jenisCat: document.getElementById("jenisCat").value,
+    jmlKT: parseInt(document.getElementById("jmlKT").value)||3,
+    jmlKM: parseInt(document.getElementById("jmlKM").value)||2,
+    kanopi: parseFloat(document.getElementById("kanopi").value)||0,
+    pagar: parseFloat(document.getElementById("pagar").value)||0,
+    carport: parseFloat(document.getElementById("carport").value)||0,
+    kitchenSet: document.getElementById("kitchenSet").value,
+    jenisListrik: parseInt(document.getElementById("jenisListrik").value),
+    septictank: document.getElementById("septictank").value,
+    upahKepala: parseFloat(document.getElementById("upahKepala").value)||200000,
+    upahTukang: parseFloat(document.getElementById("upahTukang").value)||150000,
+    upahKenek: parseFloat(document.getElementById("upahKenek").value)||100000,
+    overhead: parseFloat(document.getElementById("overhead").value)||15,
+    ppn: parseFloat(document.getElementById("ppn").value)||11,
+    lokasiIdx: parseFloat(document.getElementById("lokasiProyek").value)||0.90,
+  };
+}
+
+function parseDim(str){ let p=str.split("x"); return {a:parseFloat(p[0])/100, b:parseFloat(p[1])/100}; }
+
+// =========================================================
+// CEK STRUKTUR (WARNINGS)
+// =========================================================
+function cekStruktur(inp){
+  let warnings = [], oke = [];
+  let {p,l,lt,t,jenisTanah,mutoBeton,besiKolom,dimKolom} = inp;
+  let luas = p*l;
+  let beban_atap_kg_m2 = {genteng_metal:7,genteng_tanah:50,genteng_beton:40,asbes:15,zincalume:10}[inp.jenisAtap]||10;
+
+  // 1. Mutu beton vs lantai
+  if(lt>=3 && mutoBeton==="fc15") warnings.push("Mutu beton fc'15 MPa tidak memadai untuk bangunan "+lt+" lantai. Gunakan minimal fc'25 MPa.");
+  else if(lt>=2 && mutoBeton==="fc15") warnings.push("Mutu beton fc'15 MPa kurang ideal untuk rumah 2 lantai. Disarankan fc'21 MPa minimal.");
+  else oke.push("Mutu beton "+mutoBeton+" sesuai untuk "+lt+" lantai.");
+
+  // 2. Besi vs lantai
+  if(lt>=3 && besiKolom<16) warnings.push("Besi kolom D"+besiKolom+" terlalu kecil untuk "+lt+" lantai. Gunakan minimal D16.");
+  else if(lt>=2 && besiKolom<13) warnings.push("Besi kolom D"+besiKolom+" kurang untuk rumah 2 lantai. Gunakan minimal D13.");
+  else oke.push("Ukuran besi D"+besiKolom+" sesuai untuk "+lt+" lantai.");
+
+  // 3. Kolom vs lantai
+  let d=parseDim(dimKolom);
+  if(lt>=3 && d.a<0.25) warnings.push("Dimensi kolom "+dimKolom+"cm terlalu kecil untuk "+lt+" lantai. Gunakan minimal 25×25cm.");
+  else if(lt>=2 && d.a<0.20) warnings.push("Dimensi kolom "+dimKolom+"cm kurang untuk 2 lantai. Gunakan minimal 20×20cm.");
+  else oke.push("Dimensi kolom "+dimKolom+" sesuai.");
+
+  // 4. Tanah lunak
+  if(jenisTanah==="lunak" && lt>=2) warnings.push("Tanah lunak untuk bangunan bertingkat: Wajib menggunakan pondasi dalam (tiang pancang/bor), bukan pondasi batu kali biasa.");
+  if(jenisTanah==="lunak") warnings.push("Tanah lunak: Pertimbangkan penambahan pile cap atau raft foundation. Konsultasi geoteknik diperlukan.");
+
+  // 5. Beban atap berat
+  if(beban_atap_kg_m2>40 && lt>=2) warnings.push("Atap berat ("+beban_atap_kg_m2+" kg/m²) pada bangunan bertingkat meningkatkan beban struktur signifikan. Periksa dimensi kolom & balok.");
+
+  // 6. Rasio panjang lebar
+  if(p/l > 3 || l/p > 3) warnings.push("Rasio panjang:lebar bangunan "+fmtN(Math.max(p/l,l/p),1)+":1 terlalu ekstrem. Dapat menyebabkan masalah struktural. Idealnya < 3:1.");
+
+  // 7. Tinggi dinding
+  if(t>4.5) warnings.push("Tinggi dinding "+t+"m melebihi standar. Dinding perlu kolom praktis tambahan setiap 3m.");
+  if(t>3.5 && inp.jenisDinding==="bata_ringan") warnings.push("Bata ringan pada dinding tinggi "+t+"m: Wajib kolom praktis tiap 3m dan ring balok antara.");
+
+  // 8. Luas bangunan
+  if(luas > 200 && lt===1) oke.push("Luas bangunan "+luas+"m² cukup besar. Pastikan ada kolom tengah setiap 4-6m.");
+
+  // 9. SNI Gempa
+  if(lt>=3) warnings.push("Bangunan 3+ lantai wajib perhitungan SNI gempa 1726:2019. Hubungi structural engineer.");
+
+  return {warnings, oke};
+}
+
+// =========================================================
+// PERHITUNGAN UTAMA
+// =========================================================
+function hitungSemua() {
+  let inp = getInputs();
+  let {p,l,t,lt,dalamPondasi,mutoBeton,lokasiIdx} = inp;
+
+  let keliling = 2*(p+l);
+  let luasLantai = p*l;
+  let luasTotal = luasLantai*lt;
+  let luasAtap = luasLantai*1.25; // kemiringan atap
+  let luasDinding = keliling*t*lt;
+  // Kurangi bukaan pintu & jendela (~20%)
+  let luasDindingBersih = luasDinding * 0.80;
+  let luasPlafon = luasLantai*lt;
+
+  // Kolom grid
+  let koKolom = parseDim(inp.dimKolom);
+  let koSloof = parseDim(inp.dimSloof);
+  let koRing = parseDim(inp.dimRing);
+
+  // Grid kolom (jarak maks 3.5m SNI)
+  let nKolomP = Math.ceil(p/3.5)+1;
+  let nKolomL = Math.ceil(l/3.5)+1;
+  let jmlKolom = nKolomP * nKolomL;
+  let tinggiKolom = t*lt;
+
+  // ========================
+  // A. PONDASI
+  // ========================
+  let lebarPondasi=0.60, tebalPondasi=dalamPondasi;
+  let volPondasi = keliling * lebarPondasi * tebalPondasi;
+  // Faktor tanah
+  let fTanah = {keras:1.0, sedang:1.2, lunak:1.6}[inp.jenisTanah];
+  volPondasi *= fTanah;
+
+  let pBatu = volPondasi * K.pondasi.batu_kali;
+  let pSemen = volPondasi * K.pondasi.semen;
+  let pPasir = volPondasi * K.pondasi.pasir;
+  let biayaPondasi = (pBatu*H.batu_kali)+(pSemen*H.semen)+(pPasir*H.pasir_pasang);
+  biayaPondasi *= lokasiIdx;
+
+  // ========================
+  // B. CAKAR AYAM / FOOTPLATE
+  // ========================
+  // SNI: footplate 40x40x25 untuk 1 lantai, 50x50x30 untuk 2 lantai, 60x60x35 untuk 3+
+  let sCA, tCA, jmlCA;
+  if(lt===1){ sCA=0.40; tCA=0.25; }
+  else if(lt===2){ sCA=0.50; tCA=0.30; }
+  else if(lt===3){ sCA=0.60; tCA=0.35; }
+  else { sCA=0.70; tCA=0.40; }
+  jmlCA = jmlKolom;
+  let volCA = jmlCA * sCA * sCA * tCA;
+  let koefB = K.beton[mutoBeton];
+  let caSemen = Math.ceil(volCA * K.beton.fc21.semen); // pakai fc21 base
+  let caPasir = volCA * K.beton.fc21.pasir;
+  let caSplit = volCA * K.beton.fc21.split;
+  let caBesi = volCA * 147; // kg/m³ footplate
+  let caKawat = volCA * 2.2;
+
+  let hargaBesiKolom = [H.besi_D10,H.besi_D13,H.besi_D16,H.besi_D19][[10,13,16,19].indexOf(inp.besiKolom)]||H.besi_D13;
+
+  let biayaCA = (caSemen*H.semen)+(caPasir*H.pasir_beton)+(caSplit*H.split)+(caBesi*hargaBesiKolom)+(caKawat*H.kawat_bendrat);
+  biayaCA *= lokasiIdx;
+
+  // ========================
+  // C. SLOOF
+  // ========================
+  let volSloof = keliling * koSloof.a * koSloof.b;
+  let slSemen = Math.ceil(volSloof * koefB.semen);
+  let slPasir = volSloof * koefB.pasir;
+  let slSplit = volSloof * koefB.split;
+  let slBesi = volSloof * K.besi_berat_per_m3;
+  let biayaSloof = (slSemen*H.semen)+(slPasir*H.pasir_beton)+(slSplit*H.split)+(slBesi*hargaBesiKolom);
+  biayaSloof *= lokasiIdx;
+
+  // ========================
+  // D. KOLOM PRAKTIS
+  // ========================
+  let volKolom = jmlKolom * koKolom.a * koKolom.b * tinggiKolom;
+  let koSemen = Math.ceil(volKolom * koefB.semen);
+  let koPasir = volKolom * koefB.pasir;
+  let koSplit = volKolom * koefB.split;
+  let koBesi = volKolom * 150; // kolom lebih banyak besi
+  let biayaKolom = (koSemen*H.semen)+(koPasir*H.pasir_beton)+(koSplit*H.split)+(koBesi*hargaBesiKolom);
+  biayaKolom *= lokasiIdx;
+
+  // ========================
+  // E. RING BALOK
+  // ========================
+  let volRing = keliling * koRing.a * koRing.b * lt;
+  let rkSemen = Math.ceil(volRing * koefB.semen);
+  let rkPasir = volRing * koefB.pasir;
+  let rkSplit = volRing * koefB.split;
+  let rkBesi = volRing * K.besi_berat_per_m3;
+  let biayaRing = (rkSemen*H.semen)+(rkPasir*H.pasir_beton)+(rkSplit*H.split)+(rkBesi*hargaBesiKolom);
+  biayaRing *= lokasiIdx;
+
+  // ========================
+  // F. DAK BETON (lantai > 1)
+  // ========================
+  let dakData = null, biayaDak = 0;
+  if(lt >= 2){
+    let tebalDak = 0.12;
+    let volDak = luasLantai * tebalDak * (lt-1);
+    let dkSemen = Math.ceil(volDak * koefB.semen);
+    let dkPasir = volDak * koefB.pasir;
+    let dkSplit = volDak * koefB.split;
+    let dkBesi = volDak * 130; // kg/m³ pelat
+    biayaDak = (dkSemen*H.semen)+(dkPasir*H.pasir_beton)+(dkSplit*H.split)+(dkBesi*hargaBesiKolom);
+    biayaDak *= lokasiIdx;
+    dakData = {vol:volDak, semen:dkSemen, pasir:dkPasir, split:dkSplit, besi:dkBesi, biaya:biayaDak};
+  }
+
+  // ========================
+  // G. BEKISTING
+  // ========================
+  let lBek = (volKolom*10)+(volSloof*8)+(volRing*6)+(volCA*5)+(dakData?dakData.vol*12:0);
+  let bekTriplek = Math.ceil(lBek * 0.35);
+  let bekKaso = Math.ceil(lBek * 2.5);
+  let bekPaku = lBek * 0.20;
+  let biayaBekisting = (bekTriplek*H.bekisting_triplek)+(bekKaso*H.bekisting_kaso)+(bekPaku*H.bekisting_paku);
+  biayaBekisting *= lokasiIdx;
+
+  // ========================
+  // H. DINDING
+  // ========================
+  let dSemen=0, dPasir=0, dBata=0, dMortar=0, dBatako=0;
+  let biayaDinding = 0;
+  if(inp.jenisDinding==="bata_merah"){
+    dBata = Math.ceil(luasDindingBersih * K.bata_merah.bata);
+    dSemen = Math.ceil(luasDindingBersih * K.bata_merah.semen);
+    dPasir = luasDindingBersih * K.bata_merah.pasir;
+    biayaDinding = (dBata*H.bata_merah)+(dSemen*H.semen)+(dPasir*H.pasir_pasang);
+  } else if(inp.jenisDinding==="bata_ringan"){
+    dBata = Math.ceil(luasDindingBersih * K.bata_ringan.bata);
+    dMortar = Math.ceil(luasDindingBersih * K.bata_ringan.mortar);
+    biayaDinding = (dBata*H.bata_ringan)+(dMortar*H.mortar_semen);
+  } else {
+    dBatako = Math.ceil(luasDindingBersih * K.batako.bata);
+    dSemen = Math.ceil(luasDindingBersih * K.batako.semen);
+    dPasir = luasDindingBersih * K.batako.pasir;
+    biayaDinding = (dBatako*H.batako)+(dSemen*H.semen)+(dPasir*H.pasir_pasang);
+  }
+  biayaDinding *= lokasiIdx;
+
+  // ========================
+  // I. PLESTERAN & ACIAN
+  // ========================
+  let plSemen = Math.ceil(luasDindingBersih * K.plester.semen * 2); // *2 (dalam+luar)
+  let plPasir = luasDindingBersih * K.plester.pasir * 2;
+  let acSemen = Math.ceil(luasDindingBersih * K.acian.semen * 2);
+  let biayaPlester = (plSemen*H.semen)+(plPasir*H.pasir_plester)+(acSemen*H.semen);
+  biayaPlester *= lokasiIdx;
+
+  // ========================
+  // J. CAT
+  // ========================
+  let luasCat = luasDindingBersih*2 + luasPlafon; // dalam+luar+plafon
+  let catHarga = {ekonomis:H.cat_ekonomis, medium:H.cat_medium, premium:H.cat_premium}[inp.jenisCat];
+  let catLtr = luasCat * K.cat.cat;
+  let catDasarLtr = luasCat * K.cat.cat_dasar;
+  let biayaCat = (catLtr*catHarga)+(catDasarLtr*H.cat_dasar);
+  biayaCat *= lokasiIdx;
+
+  // ========================
+  // K. KERAMIK
+  // ========================
+  let luasKeramikLantai = luasLantai * lt * 1.05; // +5% waste
+  let luasKeramikDindingKM = inp.jmlKM * 12; // ~12m² per KM
+  let luasKeramikTotal = luasKeramikLantai + luasKeramikDindingKM;
+  let hrgKeramik = {['40x40']:H.keramik_40, ['60x60']:H.keramik_60, granite:H.granite}[inp.jenisKeramik]||H.keramik_40;
+  let biayaKeramik = (luasKeramikLantai * hrgKeramik) + (luasKeramikDindingKM * H.keramik_40);
+  let semenNat = Math.ceil(luasKeramikTotal * 0.035);
+  biayaKeramik += semenNat * H.semen;
+  biayaKeramik *= lokasiIdx;
+
+  // ========================
+  // L. ATAP
+  // ========================
+  let rangkaAtapBiaya = 0;
+  let luasAtapEffektif = luasAtap; // dengan kemiringan
+  if(inp.rangkaAtap==="baja_ringan"){
+    rangkaAtapBiaya = luasAtapEffektif * 4.5 * H.baja_ringan_kg;
+  } else if(inp.rangkaAtap==="kayu_kelas_2"){
+    rangkaAtapBiaya = luasAtapEffektif * 0.015 * H.kayu_k2_m3;
+  } else if(inp.rangkaAtap==="kayu_kelas_1"){
+    rangkaAtapBiaya = luasAtapEffektif * 0.015 * H.kayu_k1_m3;
+  } else {
+    rangkaAtapBiaya = luasAtapEffektif * 6 * H.baja_wf_kg;
+  }
+
+  let gentengBiaya = 0, jmlGenteng = 0, satGenteng = "";
+  if(inp.jenisAtap==="genteng_metal"){ jmlGenteng=Math.ceil(luasAtapEffektif*K.atap.genteng_metal); gentengBiaya=jmlGenteng*H.genteng_metal_lbr; satGenteng="lembar"; }
+  else if(inp.jenisAtap==="genteng_tanah"){ jmlGenteng=Math.ceil(luasAtapEffektif*K.atap.genteng_tanah); gentengBiaya=jmlGenteng*H.genteng_tanah_bh; satGenteng="biji"; }
+  else if(inp.jenisAtap==="genteng_beton"){ jmlGenteng=Math.ceil(luasAtapEffektif*K.atap.genteng_beton); gentengBiaya=jmlGenteng*H.genteng_beton_bh; satGenteng="biji"; }
+  else if(inp.jenisAtap==="asbes"){ jmlGenteng=Math.ceil(luasAtapEffektif*K.atap.asbes); gentengBiaya=jmlGenteng*H.asbes_lbr; satGenteng="lembar"; }
+  else { jmlGenteng=Math.ceil(luasAtapEffektif*K.atap.zincalume); gentengBiaya=jmlGenteng*H.zincalume_lbr; satGenteng="lembar"; }
+
+  let biayaAtap = (rangkaAtapBiaya + gentengBiaya) * lokasiIdx;
+
+  // ========================
+  // M. PLAFON
+  // ========================
+  let plafonBiaya = 0;
+  let jmlPlafon = Math.ceil(luasPlafon*K.plafon.gypsum);
+  let jmlHollow = Math.ceil(luasPlafon*K.plafon.hollow);
+  if(inp.jenisPlafon==="gypsum"){ plafonBiaya=(jmlPlafon*H.gypsum_lbr)+(jmlHollow*H.hollow_btg); }
+  else if(inp.jenisPlafon==="kalsiboard"){ plafonBiaya=(jmlPlafon*H.kalsiboard_lbr)+(jmlHollow*H.hollow_btg); }
+  else if(inp.jenisPlafon==="pvc"){ plafonBiaya=luasPlafon*H.pvc_panel; }
+  else { plafonBiaya=(jmlPlafon*(H.bekisting_triplek*0.5))+(jmlHollow*H.hollow_btg); }
+  let listM = keliling*2;
+  plafonBiaya += listM*H.list_gypsum;
+  plafonBiaya *= lokasiIdx;
+
+  // ========================
+  // N. PINTU & JENDELA
+  // ========================
+  let jmlPintuUtama = 1;
+  let jmlPintuKT = inp.jmlKT;
+  let jmlPintuKM = inp.jmlKM;
+  let jmlPintuLain = 2; // dapur, laundry, dll
+  let jmlPintuTotal = jmlPintuUtama+jmlPintuKT+jmlPintuKM+jmlPintuLain;
+  let jmlJendela = (inp.jmlKT*2)+4; // per kamar 2 + ruang tamu dll
+  let biayaPintu = (jmlPintuUtama*H.pintu_kayu*1.5)+(jmlPintuKT*H.pintu_kayu)+(jmlPintuKM*H.pintu_KM)+(jmlPintuLain*H.pintu_kayu*0.8);
+  let biayaJendela = jmlJendela * H.jendela_minimalis;
+  let biayaKusen = jmlPintuTotal * H.kusen_kayu;
+  let biayaPintuTotal = (biayaPintu+biayaJendela+biayaKusen)*lokasiIdx;
+
+  // ========================
+  // O. LISTRIK
+  // ========================
+  let jmlTitikLampu = (inp.jmlKT*2)+6; // kamar+ruang+dapur+KM
+  let jmlStopKontak = jmlTitikLampu*2;
+  let jmlSaklar = jmlTitikLampu;
+  let jmlMCB = inp.lt>=2 ? 8 : 4;
+  let panjangKabel = (luasDindingBersih/2)*2 + (jmlTitikLampu*4);
+
+  let biayaListrik = (jmlTitikLampu*H.lampu_led_9w)+
+                     (jmlStopKontak*H.stop_kontak)+
+                     (jmlSaklar*H.saklar_tunggal)+
+                     (jmlMCB*H.mcb_16a)+
+                     (panjangKabel*H.kabel_NYM)+
+                     H.panel_listrik;
+  biayaListrik *= lokasiIdx;
+
+  // ========================
+  // P. SANITASI / PLUMBING
+  // ========================
+  let panjangPipaAir = (keliling*lt*0.5)+20; // distribusi
+  let panjangPipaBuang = inp.jmlKM*8+10;
+  let biayaSanitasi = (panjangPipaAir*H.pipa_PVC_1)+
+                      (panjangPipaBuang*H.pipa_PVC_4)+
+                      (inp.jmlKM*(H.closet_duduk+H.wastafel+H.shower+H.floor_drain*2));
+  if(inp.septictank==="bio") biayaSanitasi += H.septictank_bio;
+  else if(inp.septictank==="bata") biayaSanitasi += H.septictank_bata;
+  biayaSanitasi *= lokasiIdx;
+
+  // ========================
+  // Q. TAMBAHAN OPSIONAL
+  // ========================
+  let biayaKitchen = 0;
+  if(inp.kitchenSet==="sederhana") biayaKitchen=H.kitchen_sederhana;
+  else if(inp.kitchenSet==="standard") biayaKitchen=H.kitchen_standard;
+  else if(inp.kitchenSet==="premium") biayaKitchen=H.kitchen_premium;
+
+  let biayaKanopi = inp.kanopi * H.kanopi_m2 * lokasiIdx;
+  let biayaPagar = inp.pagar * H.pagar_m * lokasiIdx;
+  let biayaCarport = inp.carport * H.carport_m2 * lokasiIdx;
+
+  // ========================
+  // R. TENAGA KERJA
+  // ========================
+  let jmlTukang = Math.max(3, Math.ceil(luasTotal/25));
+  let jmlKepala = Math.max(1, Math.ceil(jmlTukang/4));
+  let jmlKenek = Math.ceil(jmlTukang*1.5);
+  let jmlHari = Math.max(30, Math.ceil(luasTotal/2));
+  let biayaTenagaKerja = (jmlKepala*inp.upahKepala + jmlTukang*inp.upahTukang + jmlKenek*inp.upahKenek) * jmlHari;
+  biayaTenagaKerja *= lokasiIdx;
+
+  // ========================
+  // S. TOTAL
+  // ========================
+  let biayaMaterial = biayaPondasi+biayaCA+biayaSloof+biayaKolom+biayaRing+biayaBekisting+
+                      (dakData?biayaDak:0)+biayaDinding+biayaPlester+biayaCat+biayaKeramik+
+                      biayaAtap+plafonBiaya+biayaPintuTotal+biayaListrik+biayaSanitasi+
+                      biayaKitchen+biayaKanopi+biayaPagar+biayaCarport;
+
+  let biayaSubTotal = biayaMaterial + biayaTenagaKerja;
+  let biayaOverhead = biayaSubTotal * inp.overhead/100;
+  let biayaPrePPN = biayaSubTotal + biayaOverhead;
+  let biayaPPN = biayaPrePPN * inp.ppn/100;
+  let totalAkhir = biayaPrePPN + biayaPPN;
+  let hargaPerM2 = totalAkhir/luasTotal;
+
+  // ========================
+  // SIMPAN UNTUK RENDER
+  // ========================
+  window._hasil = {
+    inp, keliling, luasLantai, luasTotal, luasAtap, luasDinding, luasDindingBersih, luasPlafon,
+    jmlKolom, nKolomP, nKolomL, koKolom, koSloof, koRing,
+    volPondasi, pBatu, pSemen, pPasir, biayaPondasi,
+    volCA, jmlCA, sCA, tCA, caSemen, caPasir, caSplit, caBesi, caKawat, biayaCA,
+    volSloof, slSemen, slPasir, slSplit, slBesi, biayaSloof,
+    volKolom, koSemen, koPasir, koSplit, koBesi, biayaKolom,
+    volRing, rkSemen, rkPasir, rkSplit, rkBesi, biayaRing,
+    bekTriplek, bekKaso, bekPaku, biayaBekisting, dakData,
+    dBata, dSemen, dPasir, dMortar, dBatako, biayaDinding,
+    plSemen, plPasir, acSemen, biayaPlester,
+    catLtr, catDasarLtr, biayaCat,
+    luasKeramikLantai, luasKeramikDindingKM, semenNat, biayaKeramik,
+    jmlGenteng, satGenteng, rangkaAtapBiaya, gentengBiaya, biayaAtap, luasAtapEffektif,
+    jmlPlafon, jmlHollow, listM, plafonBiaya,
+    jmlPintuTotal, jmlJendela, biayaPintuTotal,
+    jmlTitikLampu, jmlStopKontak, jmlSaklar, jmlMCB, panjangKabel, biayaListrik,
+    panjangPipaAir, panjangPipaBuang, biayaSanitasi,
+    biayaKitchen, biayaKanopi, biayaPagar, biayaCarport,
+    jmlTukang, jmlKepala, jmlKenek, jmlHari, biayaTenagaKerja,
+    biayaMaterial, biayaSubTotal, biayaOverhead, biayaPrePPN, biayaPPN, totalAkhir, hargaPerM2,
+    koefB
+  };
+
+  renderStruktur();
+  renderDinding();
+  renderMEP();
+  renderAtap();
+  renderRAB();
+  renderWarnings();
+  gambarDenah();
+
+  // Show summary
+  document.getElementById("quickSummary").style.display = "block";
+  let h = window._hasil;
+  document.getElementById("statCards").innerHTML = `
+    <div class="stat-card"><div class="slabel">Luas Total</div><div class="sval">${fmtN(h.luasTotal,0)}</div><div class="sunit">m²</div></div>
+    <div class="stat-card"><div class="slabel">Total Biaya</div><div class="sval">${fmtN(h.totalAkhir/1e9,2)}</div><div class="sunit">Miliar Rp</div></div>
+    <div class="stat-card"><div class="slabel">Harga/m²</div><div class="sval">${fmtN(h.hargaPerM2/1e6,2)}</div><div class="sunit">Juta/m²</div></div>
+    <div class="stat-card"><div class="slabel">Biaya Material</div><div class="sval">${fmtN(h.biayaMaterial/1e9,2)}</div><div class="sunit">Miliar</div></div>
+    <div class="stat-card"><div class="slabel">Biaya Tenaga</div><div class="sval">${fmtN(h.biayaTenagaKerja/1e6,0)}</div><div class="sunit">Juta</div></div>
+    <div class="stat-card"><div class="slabel">Durasi Proyek</div><div class="sval">${h.jmlHari}</div><div class="sunit">Hari Kerja</div></div>
+    <div class="stat-card"><div class="slabel">Jml Kolom</div><div class="sval">${h.jmlKolom}</div><div class="sunit">Titik</div></div>
+    <div class="stat-card"><div class="slabel">Semen Total</div><div class="sval">${Math.ceil(h.pSemen+h.slSemen+h.koSemen+h.rkSemen+h.caSemen+(h.dakData?h.dakData.semen:0)+h.plSemen+h.acSemen+h.dSemen)}</div><div class="sunit">Sak</div></div>
+  `;
+}
+
+function renderWarnings(){
+  let inp = window._hasil.inp;
+  let {warnings, oke} = cekStruktur(inp);
+  let html = "";
+  if(warnings.length>0){
+    html += `<div class="warn-panel"><h4>⚠️ PERINGATAN STRUKTUR (${warnings.length} Masalah Ditemukan)</h4>`;
+    warnings.forEach(w=>{ html+=`<div class="warn-item">${w}</div>`; });
+    html += `</div>`;
+  }
+  if(oke.length>0 && warnings.length===0){
+    html += `<div class="ok-panel"><h4>✅ Struktur Aman – Semua parameter dalam batas SNI</h4>`;
+    oke.forEach(o=>{ html+=`<div style="color:#4ade80;font-size:12px;padding-left:14px;">✓ ${o}</div>`; });
+    html += `</div>`;
+  } else if(oke.length>0){
+    html += `<div class="ok-panel"><h4>✅ Parameter yang Sudah Sesuai</h4>`;
+    oke.forEach(o=>{ html+=`<div style="color:#4ade80;font-size:12px;padding-left:14px;">✓ ${o}</div>`; });
+    html += `</div>`;
+  }
+  document.getElementById("warningPanel").innerHTML = html;
+}
+
+function mkRow(label, val, unit="", note=""){
+  return `<tr><td>${label}${note?'<br><small style="color:#64748b;">'+note+'</small>':''}</td><td><strong>${val}</strong> ${unit}</td></tr>`;
+}
+
+// =========================================================
+// RENDER STRUKTUR
+// =========================================================
+function renderStruktur(){
+  let h = window._hasil, i = h.inp;
+  let html = `
+  <div class="g2">
+    <div class="card"><div class="section-title">🪨 Pondasi Batu Kali (SNI 03-2835)</div>
+      <div class="card-light"><table>
+        ${mkRow("Keliling Bangunan", fmtN(h.keliling,1), "m")}
+        ${mkRow("Volume Pondasi", fmtN(h.volPondasi,2), "m³", "Lebar 60cm × Dalam "+i.dalamPondasi+"m × Faktor Tanah")}
+        ${mkRow("Batu Belah 15/20", fmtN(h.pBatu,2), "m³")}
+        ${mkRow("Semen Portland", Math.ceil(h.pSemen), "sak")}
+        ${mkRow("Pasir Pasang", fmtN(h.pPasir,2), "m³")}
+        ${mkRow("Jenis Tanah", {keras:"Keras",sedang:"Sedang",lunak:"Lunak"}[i.jenisTanah], "", "Faktor pembesaran volume pondasi")}
+        <tr class="rab-subtotal"><td>💰 Biaya Pondasi</td><td><strong>${fmtRp(h.biayaPondasi)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🦶 Footplate / Cakar Ayam (SNI)</div>
+      <div class="card-light"><table>
+        ${mkRow("Jumlah Grid Kolom", h.jmlCA, "titik", `Grid ${h.nKolomP}×${h.nKolomL} (jarak maks 3.5m)`)}
+        ${mkRow("Ukuran Footplate", (h.sCA*100)+"×"+(h.sCA*100), "cm", "Per titik")}
+        ${mkRow("Tebal Footplate", (h.tCA*100), "cm")}
+        ${mkRow("Volume Beton", fmtN(h.volCA,2), "m³")}
+        ${mkRow("Semen", h.caSemen, "sak")}
+        ${mkRow("Pasir Beton", fmtN(h.caPasir,2), "m³")}
+        ${mkRow("Split 2/3", fmtN(h.caSplit,2), "m³")}
+        ${mkRow("Besi Tulangan D"+i.besiKolom, fmtN(h.caBesi,1), "kg", "Koef 147 kg/m³")}
+        ${mkRow("Kawat Bendrat", fmtN(h.caKawat,1), "kg")}
+        <tr class="rab-subtotal"><td>💰 Biaya Footplate</td><td><strong>${fmtRp(h.biayaCA)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🏗️ Sloof ${i.dimSloof}cm (SNI 2847:2019)</div>
+      <div class="card-light"><table>
+        ${mkRow("Volume Sloof", fmtN(h.volSloof,2), "m³")}
+        ${mkRow("Semen", h.slSemen, "sak")}
+        ${mkRow("Pasir Beton", fmtN(h.slPasir,2), "m³")}
+        ${mkRow("Split 2/3", fmtN(h.slSplit,2), "m³")}
+        ${mkRow("Besi D"+i.besiKolom, fmtN(h.slBesi,1), "kg")}
+        ${mkRow("Sengkang Ø"+i.besiSengkang, fmtN(h.volSloof*30,1), "kg", "Jarak 15cm zona tumpuan")}
+        <tr class="rab-subtotal"><td>💰 Biaya Sloof</td><td><strong>${fmtRp(h.biayaSloof)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🏛️ Kolom ${i.dimKolom}cm (${h.jmlKolom} Titik)</div>
+      <div class="card-light"><table>
+        ${mkRow("Grid Kolom", h.nKolomP+"×"+h.nKolomL, "baris", "Jarak ≤3.5m (SNI)")}
+        ${mkRow("Tinggi Kolom Total", fmtN(h.inp.t*h.inp.lt,1), "m")}
+        ${mkRow("Volume Beton", fmtN(h.volKolom,2), "m³")}
+        ${mkRow("Semen", h.koSemen, "sak")}
+        ${mkRow("Pasir Beton", fmtN(h.koPasir,2), "m³")}
+        ${mkRow("Split 2/3", fmtN(h.koSplit,2), "m³")}
+        ${mkRow("Besi Utama D"+i.besiKolom, fmtN(h.koBesi,1), "kg")}
+        <tr class="rab-subtotal"><td>💰 Biaya Kolom</td><td><strong>${fmtRp(h.biayaKolom)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">⬛ Ring Balok ${i.dimRing}cm</div>
+      <div class="card-light"><table>
+        ${mkRow("Volume Beton", fmtN(h.volRing,2), "m³")}
+        ${mkRow("Semen", h.rkSemen, "sak")}
+        ${mkRow("Pasir Beton", fmtN(h.rkPasir,2), "m³")}
+        ${mkRow("Split 2/3", fmtN(h.rkSplit,2), "m³")}
+        ${mkRow("Besi D"+i.besiKolom, fmtN(h.rkBesi,1), "kg")}
+        <tr class="rab-subtotal"><td>💰 Biaya Ring Balok</td><td><strong>${fmtRp(h.biayaRing)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🪚 Bekisting Struktur</div>
+      <div class="card-light"><table>
+        ${mkRow("Triplek 12mm 1.2×2.4m", h.bekTriplek, "lembar")}
+        ${mkRow("Kayu Kaso 4/6", h.bekKaso, "batang 4m")}
+        ${mkRow("Paku Campur", fmtN(h.bekPaku,1), "kg")}
+        <tr class="rab-subtotal"><td>💰 Biaya Bekisting</td><td><strong>${fmtRp(h.biayaBekisting)}</strong></td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  ${h.dakData ? `
+  <div class="card"><div class="section-title">🏢 Dak Beton Lantai ${i.lt} (Tebal 12cm)</div>
+    <div class="card-light"><table class="g2">
+      ${mkRow("Luas Dak", fmtN(h.luasLantai*(i.lt-1),2), "m²")}
+      ${mkRow("Volume Beton", fmtN(h.dakData.vol,2), "m³")}
+      ${mkRow("Semen", h.dakData.semen, "sak")}
+      ${mkRow("Pasir Beton", fmtN(h.dakData.pasir,2), "m³")}
+      ${mkRow("Split 2/3", fmtN(h.dakData.split,2), "m³")}
+      ${mkRow("Besi Pelat D10-D13", fmtN(h.dakData.besi,1), "kg", "Koef 130 kg/m³")}
+      <tr class="rab-subtotal"><td>💰 Biaya Dak Beton</td><td><strong>${fmtRp(h.dakData.biaya)}</strong></td></tr>
+    </table></div>
+  </div>` : `<div class="alert alert-info">ℹ️ Tidak ada dak beton – bangunan 1 lantai</div>`}
+
+  <div class="stat-card" style="margin-top:16px;text-align:left;padding:16px;">
+    <div style="font-size:1rem;font-weight:700;color:var(--green);margin-bottom:8px;">📊 TOTAL STRUKTUR BAWAH + ATAS</div>
+    <div class="g4">
+      <div><div class="slabel">Semen Total</div><div class="sval">${Math.ceil(h.pSemen+h.slSemen+h.koSemen+h.rkSemen+h.caSemen+(h.dakData?h.dakData.semen:0))}</div><div class="sunit">sak</div></div>
+      <div><div class="slabel">Pasir Total</div><div class="sval">${fmtN(h.pPasir+h.slPasir+h.koPasir+h.rkPasir+h.caPasir+(h.dakData?h.dakData.pasir:0),2)}</div><div class="sunit">m³</div></div>
+      <div><div class="slabel">Split Total</div><div class="sval">${fmtN(h.slSplit+h.koSplit+h.rkSplit+h.caSplit+(h.dakData?h.dakData.split:0),2)}</div><div class="sunit">m³</div></div>
+      <div><div class="slabel">Besi Total</div><div class="sval">${fmtN(h.slBesi+h.koBesi+h.rkBesi+h.caBesi+(h.dakData?h.dakData.besi:0),1)}</div><div class="sunit">kg</div></div>
+    </div>
+  </div>`;
+
+  document.getElementById("hasilStruktur").innerHTML = html;
+}
+
+// =========================================================
+// RENDER DINDING
+// =========================================================
+function renderDinding(){
+  let h = window._hasil, i = h.inp;
+  let namaD = {bata_merah:"Bata Merah SNI 15-2094", bata_ringan:"Bata Ringan AAC (Hebel)", batako:"Batako Press"}[i.jenisDinding];
+  let html = `
+  <div class="g2">
+    <div class="card"><div class="section-title">🧱 Pasangan Dinding (${namaD})</div>
+      <div class="card-light"><table>
+        ${mkRow("Luas Dinding Total", fmtN(h.luasDinding,1), "m²")}
+        ${mkRow("Luas Bukaan (20%)", fmtN(h.luasDinding*0.2,1), "m²", "Pintu & jendela")}
+        ${mkRow("Luas Dinding Bersih", fmtN(h.luasDindingBersih,1), "m²")}
+        ${i.dBata ? mkRow("Bata Merah 5×11×22cm", fmtNI(h.dBata), "bh", "Koef 70 bh/m²") : ""}
+        ${i.dBatako ? mkRow("Batako Press", fmtNI(h.dBatako), "bh", "Koef 12.5 bh/m²") : ""}
+        ${i.dMortar ? mkRow("Mortar/Semen Instan", fmtNI(h.dMortar), "sak 40kg", "Koef 0.27 sak/m²") : ""}
+        ${h.dSemen && i.jenisDinding!=="bata_ringan" ? mkRow("Semen Portland", fmtNI(h.dSemen), "sak", "Koef 0.218 sak/m²") : ""}
+        ${h.dPasir && i.jenisDinding!=="bata_ringan" ? mkRow("Pasir Pasang", fmtN(h.dPasir,2), "m³") : ""}
+        <tr class="rab-subtotal"><td>💰 Biaya Dinding</td><td><strong>${fmtRp(h.biayaDinding)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🎨 Plesteran & Acian</div>
+      <div class="card-light"><table>
+        ${mkRow("Luas Plester (2 sisi)", fmtN(h.luasDindingBersih*2,1), "m²")}
+        ${mkRow("Semen Plester", fmtNI(h.plSemen), "sak", "SNI: 0.175 sak/m² (1:4 t15mm)")}
+        ${mkRow("Pasir Plester", fmtN(h.plPasir,2), "m³", "SNI: 0.022 m³/m²")}
+        ${mkRow("Semen Acian", fmtNI(h.acSemen), "sak", "SNI: 0.06 sak/m²")}
+        <tr class="rab-subtotal"><td>💰 Biaya Plester+Acian</td><td><strong>${fmtRp(h.biayaPlester)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🖌️ Cat Tembok (${i.jenisCat.charAt(0).toUpperCase()+i.jenisCat.slice(1)})</div>
+      <div class="card-light"><table>
+        ${mkRow("Luas Cat", fmtN(h.luasDindingBersih*2+h.luasPlafon,1), "m²", "Dinding dalam+luar+plafon")}
+        ${mkRow("Cat Tembok", fmtN(h.catLtr,1), "liter", "SNI: 0.18 liter/m²")}
+        ${mkRow("Cat Dasar/Primer", fmtN(h.catDasarLtr,1), "liter", "SNI: 0.06 liter/m²")}
+        <tr class="rab-subtotal"><td>💰 Biaya Cat</td><td><strong>${fmtRp(h.biayaCat)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🪟 Pintu & Jendela</div>
+      <div class="card-light"><table>
+        ${mkRow("Pintu Utama", "1", "buah", "Kayu solid + kaca")}
+        ${mkRow("Pintu Kamar Tidur", i.jmlKT, "buah")}
+        ${mkRow("Pintu Kamar Mandi", i.jmlKM, "buah")}
+        ${mkRow("Pintu Lain-lain", "2", "buah", "Dapur, Laundry")}
+        ${mkRow("Total Pintu", h.jmlPintuTotal, "buah")}
+        ${mkRow("Jendela", h.jmlJendela, "buah")}
+        <tr class="rab-subtotal"><td>💰 Biaya Pintu+Jendela</td><td><strong>${fmtRp(h.biayaPintuTotal)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🪨 Keramik (${i.jenisKeramik})</div>
+      <div class="card-light"><table>
+        ${mkRow("Keramik Lantai", fmtN(h.luasKeramikLantai,1), "m²", "+5% waste")}
+        ${mkRow("Keramik Dinding KM", fmtN(h.luasKeramikDindingKM,1), "m²")}
+        ${mkRow("Total Keramik", fmtN(h.luasKeramikLantai+h.luasKeramikDindingKM,1), "m²")}
+        ${mkRow("Semen Nat", fmtNI(h.semenNat), "sak")}
+        <tr class="rab-subtotal"><td>💰 Biaya Keramik</td><td><strong>${fmtRp(h.biayaKeramik)}</strong></td></tr>
+      </table></div>
+    </div>
+  </div>`;
+  document.getElementById("hasilDinding").innerHTML = html;
+}
+
+// =========================================================
+// RENDER MEP
+// =========================================================
+function renderMEP(){
+  let h = window._hasil, i = h.inp;
+  let html = `
+  <div class="g2">
+    <div class="card"><div class="section-title">⚡ Instalasi Listrik ${i.jenisListrik} VA</div>
+      <div class="card-light"><table>
+        ${mkRow("Titik Lampu", h.jmlTitikLampu, "titik")}
+        ${mkRow("Lampu LED 9W", h.jmlTitikLampu, "buah")}
+        ${mkRow("Stop Kontak", h.jmlStopKontak, "buah")}
+        ${mkRow("Saklar", h.jmlSaklar, "buah")}
+        ${mkRow("MCB", h.jmlMCB, "buah")}
+        ${mkRow("Panel Listrik", "1", "unit")}
+        ${mkRow("Kabel NYM 2.5mm²", h.panjangKabel.toFixed(0), "m")}
+        <tr class="rab-subtotal"><td>💰 Biaya Listrik</td><td><strong>${fmtRp(h.biayaListrik)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🚿 Sanitasi & Plumbing</div>
+      <div class="card-light"><table>
+        ${mkRow("Kamar Mandi", i.jmlKM, "unit")}
+        ${mkRow("Closet Duduk", i.jmlKM, "buah")}
+        ${mkRow("Wastafel", i.jmlKM, "buah")}
+        ${mkRow("Shower", i.jmlKM, "buah")}
+        ${mkRow("Floor Drain", i.jmlKM*2, "buah")}
+        ${mkRow("Pipa Air Bersih Ø1\"", h.panjangPipaAir.toFixed(0), "m")}
+        ${mkRow("Pipa Buang Ø4\"", h.panjangPipaBuang.toFixed(0), "m")}
+        ${mkRow("Septictank", {bio:"Biotank Siap Pakai",bata:"Bata Cor",tidak:"Tidak (Ada IPAL)"}[i.septictank], "")}
+        <tr class="rab-subtotal"><td>💰 Biaya Sanitasi</td><td><strong>${fmtRp(h.biayaSanitasi)}</strong></td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-top:16px;">
+    ${i.kitchenSet!=="tidak" ? `<div class="card"><div class="section-title">🍳 Kitchen Set (${i.kitchenSet})</div>
+      <div class="card-light"><table>
+        ${mkRow("Jenis", i.kitchenSet.charAt(0).toUpperCase()+i.kitchenSet.slice(1), "")}
+        <tr class="rab-subtotal"><td>💰 Biaya Kitchen Set</td><td><strong>${fmtRp(h.biayaKitchen)}</strong></td></tr>
+      </table></div></div>` : ""}
+    ${i.kanopi>0 ? `<div class="card"><div class="section-title">☂️ Kanopi ${i.kanopi}m²</div>
+      <div class="card-light"><table>
+        <tr class="rab-subtotal"><td>💰 Biaya Kanopi</td><td><strong>${fmtRp(h.biayaKanopi)}</strong></td></tr>
+      </table></div></div>` : ""}
+    ${i.pagar>0 ? `<div class="card"><div class="section-title">🔒 Pagar ${i.pagar}m</div>
+      <div class="card-light"><table>
+        <tr class="rab-subtotal"><td>💰 Biaya Pagar</td><td><strong>${fmtRp(h.biayaPagar)}</strong></td></tr>
+      </table></div></div>` : ""}
+    ${i.carport>0 ? `<div class="card"><div class="section-title">🚗 Carport ${i.carport}m²</div>
+      <div class="card-light"><table>
+        <tr class="rab-subtotal"><td>💰 Biaya Carport</td><td><strong>${fmtRp(h.biayaCarport)}</strong></td></tr>
+      </table></div></div>` : ""}
+  </div>
+
+  <div class="card" style="margin-top:16px;"><div class="section-title">👷 Tim Tenaga Kerja</div>
+    <div class="card-light"><table>
+      ${mkRow("Kepala Tukang", h.jmlKepala, "orang")}
+      ${mkRow("Tukang", h.jmlTukang, "orang")}
+      ${mkRow("Pembantu/Kenek", h.jmlKenek, "orang")}
+      ${mkRow("Total Hari Kerja", h.jmlHari, "hari", "Estimasi termasuk curing & finishing")}
+      ${mkRow("Durasi Estimasi", Math.ceil(h.jmlHari/26), "bulan")}
+      <tr class="rab-subtotal"><td>💰 Biaya Tenaga Kerja</td><td><strong>${fmtRp(h.biayaTenagaKerja)}</strong></td></tr>
+    </table></div>
+  </div>`;
+  document.getElementById("hasilMEP").innerHTML = html;
+}
+
+// =========================================================
+// RENDER ATAP
+// =========================================================
+function renderAtap(){
+  let h = window._hasil, i = h.inp;
+  let html = `
+  <div class="g2">
+    <div class="card"><div class="section-title">🏠 Kuda-kuda & Rangka Atap</div>
+      <div class="card-light"><table>
+        ${mkRow("Luas Atap (slope 25°)", fmtN(h.luasAtapEffektif,1), "m²", "Faktor 1.25× dari luas lantai")}
+        ${mkRow("Jenis Rangka", {baja_ringan:"Baja Ringan SNI",kayu_kelas_2:"Kayu Kelas II",kayu_kelas_1:"Kayu Kelas I (Jati)",baja_wf:"Baja WF"}[i.rangkaAtap], "")}
+        ${i.rangkaAtap==="baja_ringan" ? mkRow("Baja Ringan C75", fmtN(h.luasAtapEffektif*4.5,1), "kg") : ""}
+        <tr class="rab-subtotal"><td>💰 Biaya Rangka</td><td><strong>${fmtRp(h.rangkaAtapBiaya*i.lokasiIdx)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">🪨 Penutup Atap</div>
+      <div class="card-light"><table>
+        ${mkRow("Jenis Penutup", i.jenisAtap.replace("_"," ").toUpperCase(), "")}
+        ${mkRow("Jumlah", fmtNI(h.jmlGenteng), h.satGenteng)}
+        ${mkRow("Koefisien", {genteng_metal:"16 lbr/m²",genteng_tanah:"25 bh/m²",genteng_beton:"10 bh/m²",asbes:"3.5 lbr/m²",zincalume:"3.5 lbr/m²"}[i.jenisAtap], "")}
+        <tr class="rab-subtotal"><td>💰 Biaya Genteng</td><td><strong>${fmtRp(h.gentengBiaya*i.lokasiIdx)}</strong></td></tr>
+      </table></div>
+    </div>
+
+    <div class="card"><div class="section-title">✨ Plafon (${i.jenisPlafon.charAt(0).toUpperCase()+i.jenisPlafon.slice(1)})</div>
+      <div class="card-light"><table>
+        ${mkRow("Luas Plafon", fmtN(h.luasPlafon,1), "m²")}
+        ${i.jenisPlafon!=="pvc" ? mkRow("Panel/Lembaran", fmtNI(h.jmlPlafon), "lembar", "Koef 1.05 lbr/m²") : ""}
+        ${mkRow("Hollow 40×40 4m", fmtNI(h.jmlHollow), "batang", "Koef 0.85 btg/m²")}
+        ${mkRow("List Profil", fmtN(h.listM,1), "m")}
+        <tr class="rab-subtotal"><td>💰 Biaya Plafon</td><td><strong>${fmtRp(h.plafonBiaya)}</strong></td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <div class="stat-card" style="margin-top:16px;padding:16px;text-align:left;">
+    <div style="color:var(--green);font-weight:700;margin-bottom:8px;">💰 Subtotal Pekerjaan Atap + Plafon: <span style="font-size:1.2rem;">${fmtRp(h.biayaAtap+h.plafonBiaya)}</span></div>
+  </div>`;
+  document.getElementById("hasilAtap").innerHTML = html;
+}
+
+// =========================================================
+// RENDER RAB LENGKAP
+// =========================================================
+function renderRAB(){
+  let h = window._hasil, i = h.inp;
+
+  function rabSection(no, judul, rows, subtotal){
+    let rowsHTML = rows.map(r=>`<tr>
+      <td>${r[0]}</td><td>${r[1]}</td><td>${r[2]||""}</td>
+      <td>${fmtRp(r[3]||0)}</td><td>${fmtRp(r[4]||0)}</td>
+    </tr>`).join("");
+    return `
+    <div class="rab-section">
+      <div class="rab-header">${no}. ${judul}</div>
+      <table class="rab-table">
+        <thead><tr><th style="width:30%">Uraian</th><th>Vol</th><th>Sat</th><th>Harga Satuan</th><th>Jumlah</th></tr></thead>
+        <tbody>${rowsHTML}
+        <tr class="rab-subtotal"><td colspan="4">SUBTOTAL ${no}</td><td>${fmtRp(subtotal)}</td></tr>
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  let html = `
+  <div class="card-light" style="padding:20px;border-radius:16px;">
+    <div style="text-align:center;padding:16px 0;border-bottom:2px solid #e2e8f0;margin-bottom:16px;">
+      <div style="font-size:1.4rem;font-weight:800;color:#1e293b;">📄 RENCANA ANGGARAN BIAYA (RAB)</div>
+      <div style="font-size:1rem;font-weight:600;color:#22c55e;">POWERED BY KONTRAKTOR ARKIDIGITAL</div>
+      <div style="font-size:12px;color:#64748b;margin-top:6px;">
+        Bangunan: ${i.p}m × ${i.l}m × ${i.lt} Lantai | Luas Total: ${fmtN(h.luasTotal,0)} m² | Standar SNI 2024
+      </div>
+    </div>
+
+    ${rabSection("I","PEKERJAAN PERSIAPAN & PONDASI",[
+      ["Pembersihan Lahan", fmtN(h.luasLantai,1), "m²", 15000, h.luasLantai*15000],
+      ["Pengukuran & Bouwplank", fmtN(h.keliling,1), "m'", 35000, h.keliling*35000],
+      ["Galian Tanah Pondasi", fmtN(h.volPondasi*1.5,2), "m³", 75000, h.volPondasi*1.5*75000],
+      ["Urugan Pasir Bawah Pondasi", fmtN(h.keliling*0.6*0.1,2), "m³", 180000, h.keliling*0.6*0.1*180000],
+      ["Aanstamping Batu Gunung", fmtN(h.keliling*0.6*0.15,2), "m³", 250000, h.keliling*0.6*0.15*250000],
+      ["Pasangan Pondasi Batu Kali 1:3", fmtN(h.volPondasi,2), "m³", H.batu_kali+H.semen*2.8+H.pasir_pasang*0.485+25000, h.biayaPondasi],
+    ], h.biayaPondasi + h.keliling*0.6*0.25*180000 + h.keliling*35000 + h.luasLantai*15000)}
+
+    ${rabSection("II","PEKERJAAN BETON STRUKTURAL",[
+      ["Footplate/Cakar Ayam "+h.jmlCA+" titik @"+h.sCA*100+"×"+h.sCA*100+"cm", fmtN(h.volCA,2), "m³", Math.round(h.biayaCA/Math.max(h.volCA,0.01)), h.biayaCA],
+      ["Sloof Beton "+i.dimSloof+"cm", fmtN(h.volSloof,2), "m³", Math.round(h.biayaSloof/Math.max(h.volSloof,0.01)), h.biayaSloof],
+      ["Kolom Praktis "+i.dimKolom+"cm ("+h.jmlKolom+" bh)", fmtN(h.volKolom,2), "m³", Math.round(h.biayaKolom/Math.max(h.volKolom,0.01)), h.biayaKolom],
+      ["Ring Balok "+i.dimRing+"cm", fmtN(h.volRing,2), "m³", Math.round(h.biayaRing/Math.max(h.volRing,0.01)), h.biayaRing],
+      ["Bekisting Struktur", fmtN(h.bekTriplek,0), "lbr", Math.round(h.biayaBekisting/Math.max(h.bekTriplek,1)), h.biayaBekisting],
+      ...(h.dakData ? [["Dak Beton Pelat Lantai t=12cm", fmtN(h.dakData.vol,2), "m³", Math.round(h.biayaDak/Math.max(h.dakData.vol,0.01)), h.dakData.biaya]] : []),
+    ], h.biayaCA+h.biayaSloof+h.biayaKolom+h.biayaRing+h.biayaBekisting+(h.dakData?h.biayaDak:0))}
+
+    ${rabSection("III","PEKERJAAN DINDING",[
+      [i.jenisDinding==="bata_merah" ? "Pasang Bata Merah 1:4" : i.jenisDinding==="bata_ringan" ? "Pasang Bata Ringan AAC Mortar" : "Pasang Batako Press", fmtN(h.luasDindingBersih,1), "m²", Math.round(h.biayaDinding/Math.max(h.luasDindingBersih,1)), h.biayaDinding],
+      ["Plesteran 1:4 t=15mm", fmtN(h.luasDindingBersih*2,1), "m²", Math.round(h.biayaPlester*0.6/Math.max(h.luasDindingBersih*2,1)), h.biayaPlester*0.6],
+      ["Acian Semen", fmtN(h.luasDindingBersih*2,1), "m²", Math.round(h.biayaPlester*0.4/Math.max(h.luasDindingBersih*2,1)), h.biayaPlester*0.4],
+      ["Pengecatan Tembok Cat "+i.jenisCat, fmtN(h.luasDindingBersih*2+h.luasPlafon,1), "m²", Math.round(h.biayaCat/(h.luasDindingBersih*2+h.luasPlafon)), h.biayaCat],
+    ], h.biayaDinding+h.biayaPlester+h.biayaCat)}
+
+    ${rabSection("IV","PEKERJAAN LANTAI",[
+      ["Urugan Tanah + Pasir Urug", fmtN(h.luasLantai*0.15,2), "m³", 85000, h.luasLantai*0.15*85000],
+      ["Rabatan Beton 1:3:5 t=5cm", fmtN(h.luasLantai,1), "m²", 65000, h.luasLantai*65000],
+      ["Pemasangan Keramik "+i.jenisKeramik, fmtN(h.luasKeramikLantai,1), "m²", Math.round(h.biayaKeramik*0.7/Math.max(h.luasKeramikLantai,1)), h.biayaKeramik*0.7],
+      ["Keramik Dinding KM", fmtN(h.luasKeramikDindingKM,1), "m²", Math.round(h.biayaKeramik*0.3/Math.max(h.luasKeramikDindingKM,1)), h.biayaKeramik*0.3],
+    ], h.biayaKeramik+h.luasLantai*80000)}
+
+    ${rabSection("V","PEKERJAAN ATAP",[
+      ["Rangka Kuda-kuda "+i.rangkaAtap.replace("_"," "), fmtN(h.luasAtapEffektif,1), "m²", Math.round(h.rangkaAtapBiaya*i.lokasiIdx/Math.max(h.luasAtapEffektif,1)), h.rangkaAtapBiaya*i.lokasiIdx],
+      ["Penutup Atap "+i.jenisAtap.replace("_"," "), fmtN(h.jmlGenteng,0), h.satGenteng, Math.round(h.gentengBiaya*i.lokasiIdx/Math.max(h.jmlGenteng,1)), h.gentengBiaya*i.lokasiIdx],
+      ["Nok/Bubungan Atap", fmtN(h.inp.p+h.inp.l,1), "m'", 45000, (h.inp.p+h.inp.l)*45000],
+      ["Talang Air Hujan PVC", fmtN(h.inp.p*2,1), "m'", 75000, h.inp.p*2*75000],
+      ["Plafon "+i.jenisPlafon+" + Hollow", fmtN(h.luasPlafon,1), "m²", Math.round(h.plafonBiaya/Math.max(h.luasPlafon,1)), h.plafonBiaya],
+    ], h.biayaAtap+h.plafonBiaya)}
+
+    ${rabSection("VI","PEKERJAAN KUSEN, PINTU & JENDELA",[
+      ["Pintu Utama (Kayu+Kaca)", 1, "set", H.pintu_kayu*1.5+H.kusen_kayu, (H.pintu_kayu*1.5+H.kusen_kayu)*i.lokasiIdx],
+      ["Pintu Kamar Tidur", i.jmlKT, "set", H.pintu_kayu+H.kusen_kayu*0.8, (H.pintu_kayu+H.kusen_kayu*0.8)*i.jmlKT*i.lokasiIdx],
+      ["Pintu Kamar Mandi PVC/Fiber", i.jmlKM, "set", H.pintu_KM, H.pintu_KM*i.jmlKM*i.lokasiIdx],
+      ["Pintu Lain-lain", 2, "set", H.pintu_kayu*0.8, H.pintu_kayu*0.8*2*i.lokasiIdx],
+      ["Jendela Aluminium Minimalis", h.jmlJendela, "bh", H.jendela_minimalis, H.jendela_minimalis*h.jmlJendela*i.lokasiIdx],
+    ], h.biayaPintuTotal)}
+
+    ${rabSection("VII","PEKERJAAN MEKANIKAL ELEKTRIKAL PLUMBING (MEP)",[
+      ["Instalasi Listrik "+i.jenisListrik+" VA", 1, "ls", h.biayaListrik, h.biayaListrik],
+      ["Instalasi Air Bersih", 1, "ls", h.biayaSanitasi*0.3, h.biayaSanitasi*0.3],
+      ["Instalasi Air Kotor & Sanitasi", 1, "ls", h.biayaSanitasi*0.7, h.biayaSanitasi*0.7],
+    ], h.biayaListrik+h.biayaSanitasi)}
+
+    ${(i.kanopi>0||i.pagar>0||i.carport>0||i.kitchenSet!=="tidak") ? rabSection("VIII","PEKERJAAN TAMBAHAN",[
+      ...(i.kitchenSet!=="tidak" ? [["Kitchen Set "+i.kitchenSet, 1, "set", h.biayaKitchen, h.biayaKitchen]] : []),
+      ...(i.kanopi>0 ? [["Kanopi Baja+Polycarbonate", i.kanopi, "m²", H.kanopi_m2, h.biayaKanopi]] : []),
+      ...(i.pagar>0 ? [["Pagar Bata+Besi", i.pagar, "m'", H.pagar_m, h.biayaPagar]] : []),
+      ...(i.carport>0 ? [["Carport Rabatan Beton", i.carport, "m²", H.carport_m2, h.biayaCarport]] : []),
+    ], h.biayaKitchen+h.biayaKanopi+h.biayaPagar+h.biayaCarport) : ""}
+
+    ${rabSection("IX","PEKERJAAN TENAGA KERJA",[
+      ["Kepala Tukang "+h.jmlKepala+" org × "+h.jmlHari+" hari", h.jmlHari, "hari", h.jmlKepala*i.upahKepala, h.jmlKepala*i.upahKepala*h.jmlHari],
+      ["Tukang "+h.jmlTukang+" org × "+h.jmlHari+" hari", h.jmlHari, "hari", h.jmlTukang*i.upahTukang, h.jmlTukang*i.upahTukang*h.jmlHari],
+      ["Kenek "+h.jmlKenek+" org × "+h.jmlHari+" hari", h.jmlHari, "hari", h.jmlKenek*i.upahKenek, h.jmlKenek*i.upahKenek*h.jmlHari],
+    ], h.biayaTenagaKerja)}
+
+    <!-- REKAP TOTAL -->
+    <table class="rab-table" style="margin-top:20px;border-top:3px solid #15803d;">
+      <tbody>
+        <tr><td colspan="4" style="font-weight:700;color:#1e293b;">TOTAL BIAYA MATERIAL + TENAGA</td><td style="font-family:monospace;font-weight:700;color:#1e293b;">${fmtRp(h.biayaSubTotal)}</td></tr>
+        <tr><td colspan="4" style="color:#64748b;">Overhead & Profit (${i.overhead}%)</td><td style="font-family:monospace;color:#64748b;">${fmtRp(h.biayaOverhead)}</td></tr>
+        <tr><td colspan="4" style="font-weight:600;color:#1e293b;">SUBTOTAL (sebelum PPN)</td><td style="font-family:monospace;font-weight:600;">${fmtRp(h.biayaPrePPN)}</td></tr>
+        <tr><td colspan="4" style="color:#64748b;">PPN ${i.ppn}%</td><td style="font-family:monospace;color:#64748b;">${fmtRp(h.biayaPPN)}</td></tr>
+        <tr class="rab-total-row" style="font-size:1.1rem;">
+          <td colspan="4">💰 TOTAL RAB (termasuk PPN)</td>
+          <td style="font-family:monospace;font-size:1.2rem;">${fmtRp(h.totalAkhir)}</td>
+        </tr>
+        <tr><td colspan="4" style="color:#15803d;">Harga per m² (${fmtN(h.luasTotal,0)} m²)</td><td style="color:#15803d;font-weight:700;">${fmtRp(h.hargaPerM2)} / m²</td></tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:16px;font-size:11px;color:#64748b;line-height:1.8;">
+      <strong>📋 Catatan:</strong><br>
+      • Harga berdasarkan standar SNI 7394:2008 dan analisa harga satuan tahun 2025<br>
+      • Indeks lokasi ${i.lokasiIdx} telah diterapkan pada semua biaya<br>
+      • Estimasi ini bersifat perkiraan. Harga aktual dapat bervariasi tergantung kondisi lapangan<br>
+      • Direkomendasikan untuk melakukan survey harga material lokal sebelum pelaksanaan<br>
+      • <strong>Powered by Kontraktor ArkiDigital</strong> | www.arkidigital.id
+    </div>
+  </div>`;
+
+  document.getElementById("hasilRAB").innerHTML = html;
+}
+
+// =========================================================
+// GAMBAR DENAH ARSITEKTUR (Canvas SNI SKALA)
+// =========================================================
+function gambarDenah(){
+  let canvas = document.getElementById("denahCanvas");
+  let ctx = canvas.getContext("2d");
+  let W = canvas.width, H2 = canvas.height;
+  let i = getInputs();
+  let p=i.p, l=i.l, lt=i.lt;
+
+  ctx.clearRect(0,0,W,H2);
+  ctx.fillStyle="#f8fafc"; ctx.fillRect(0,0,W,H2);
+
+  // SKALA: sesuaikan agar muat di canvas
+  let margin = 80;
+  let skalaX = (W-margin*2)/p;
+  let skalaY = (H2-margin*2-80)/l;
+  let skala = Math.min(skalaX, skalaY);
+  let ox = margin, oy = margin;
+
+  // Fungsi konversi
+  let tx = x => ox + x*skala;
+  let ty = y => oy + y*skala;
+
+  // ===== GRID KOLOM (titik-titik abu) =====
+  let nKP = Math.ceil(p/3.5)+1;
+  let nKL = Math.ceil(l/3.5)+1;
+  let spX = p/(nKP-1||1);
+  let spY = l/(nKL-1||1);
+
+  // Grid lines ringan
+  ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=0.5; ctx.setLineDash([3,5]);
+  for(let r=0;r<nKP;r++){
+    ctx.beginPath(); ctx.moveTo(tx(r*spX),ty(0)); ctx.lineTo(tx(r*spX),ty(l)); ctx.stroke();
+  }
+  for(let r=0;r<nKL;r++){
+    ctx.beginPath(); ctx.moveTo(tx(0),ty(r*spY)); ctx.lineTo(tx(p),ty(r*spY)); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // RUANGAN (layout otomatis berdasarkan jmlKT, jmlKM)
+  let ruangan = generateLayoutRuangan(p, l, i.jmlKT, i.jmlKM);
+
+  ruangan.forEach(r=>{
+    // Fill ruangan
+    ctx.fillStyle = r.warna+"cc";
+    ctx.fillRect(tx(r.x), ty(r.y), r.w*skala, r.h*skala);
+    // Border dinding (tebal 3px)
+    ctx.strokeStyle="#1e293b"; ctx.lineWidth=2.5; ctx.setLineDash([]);
+    ctx.strokeRect(tx(r.x)+1.25, ty(r.y)+1.25, r.w*skala-2.5, r.h*skala-2.5);
+    // Label
+    ctx.fillStyle="#1e293b"; ctx.font="bold "+(Math.max(8,Math.min(11,r.w*skala/8)))+"px Arial";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText(r.nama, tx(r.x)+r.w*skala/2, ty(r.y)+r.h*skala/2);
+    // Ukuran
+    ctx.fillStyle="#64748b"; ctx.font=(Math.max(7,Math.min(9,r.w*skala/10)))+"px Arial";
+    ctx.fillText(fmtN(r.w,1)+"×"+fmtN(r.h,1)+"m", tx(r.x)+r.w*skala/2, ty(r.y)+r.h*skala/2+12);
+    // Pintu (simbol)
+    if(r.pintu){
+      ctx.strokeStyle="#ef4444"; ctx.lineWidth=1.5;
+      let px=tx(r.x)+r.w*skala-8, py=ty(r.y)+r.h*skala-2;
+      ctx.strokeRect(px,py-8,8,8);
+    }
+  });
+
+  // DINDING LUAR (tebal)
+  ctx.strokeStyle="#1e293b"; ctx.lineWidth=4; ctx.setLineDash([]);
+  ctx.strokeRect(tx(0),ty(0),p*skala,l*skala);
+
+  // ===== KOLOM (kotak merah kecil) =====
+  for(let r=0;r<nKP;r++){
+    for(let c=0;c<nKL;c++){
+      let kx = tx(r*spX), ky = ty(c*spY);
+      let ks = Math.max(6, Math.min(12, skala*0.15));
+      ctx.fillStyle="#ef4444";
+      ctx.fillRect(kx-ks/2, ky-ks/2, ks, ks);
+      ctx.strokeStyle="#991b1b"; ctx.lineWidth=0.5;
+      ctx.strokeRect(kx-ks/2, ky-ks/2, ks, ks);
+    }
+  }
+
+  // ===== SKALA BAR =====
+  let skalaM = 2; // 2 meter
+  let skalaBarW = skalaM*skala;
+  let barX = tx(0), barY = ty(l)+30;
+  ctx.fillStyle="#1e293b";
+  ctx.fillRect(barX, barY, skalaBarW, 6);
+  ctx.fillRect(barX, barY-4, 2, 14);
+  ctx.fillRect(barX+skalaBarW-2, barY-4, 2, 14);
+  ctx.font="bold 10px Arial"; ctx.textAlign="center"; ctx.textBaseline="top";
+  ctx.fillText("0", barX, barY+8);
+  ctx.fillText(skalaM+"m", barX+skalaBarW, barY+8);
+  ctx.fillText("SKALA 1:"+Math.round(1/skala*100), barX+skalaBarW*0.5, barY-18);
+
+  // ===== DIMENSI =====
+  ctx.fillStyle="#3b82f6"; ctx.font="bold 11px Arial"; ctx.textAlign="center";
+  // Panjang (bawah)
+  ctx.beginPath(); ctx.moveTo(tx(0),ty(l)+14); ctx.lineTo(tx(p),ty(l)+14); ctx.strokeStyle="#3b82f6"; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.fillText(p+" m", tx(p/2), ty(l)+18);
+  // Lebar (kanan)
+  ctx.save(); ctx.translate(tx(p)+30, ty(l/2)); ctx.rotate(-Math.PI/2);
+  ctx.fillText(l+" m", 0, 0); ctx.restore();
+  ctx.beginPath(); ctx.moveTo(tx(p)+14,ty(0)); ctx.lineTo(tx(p)+14,ty(l)); ctx.stroke();
+
+  // ===== TITLE =====
+  ctx.fillStyle="#1e293b"; ctx.font="bold 13px Arial"; ctx.textAlign="left"; ctx.textBaseline="top";
+  ctx.fillText("DENAH LANTAI "+lt+" – "+p+"m×"+l+"m ("+fmtN(p*l,0)+" m²)", ox, 20);
+  ctx.fillStyle="#64748b"; ctx.font="10px Arial";
+  ctx.fillText("Kontraktor ArkiDigital | SNI Standar 2024", ox, 36);
+
+  // ARAH UTARA
+  let nx = W-50, ny = 55;
+  ctx.beginPath(); ctx.moveTo(nx,ny-18); ctx.lineTo(nx+8,ny+8); ctx.lineTo(nx,ny+4); ctx.lineTo(nx-8,ny+8); ctx.closePath();
+  ctx.fillStyle="#3b82f6"; ctx.fill();
+  ctx.fillStyle="#1e293b"; ctx.font="bold 10px Arial"; ctx.textAlign="center";
+  ctx.fillText("U", nx, ny-24);
+
+  // Legend
+  document.getElementById("skalaInfo").textContent = `📏 Skala 1:${Math.round(1/skala*100)} | ${p}m × ${l}m | ${ruangan.length} Ruangan | Kolom Grid ${nKP}×${nKL}`;
+  document.getElementById("denahLegend").innerHTML = `
+    <div class="leg-item"><div class="leg-dot" style="background:#fcd34dcc;"></div> Ruang Tamu/Keluarga</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#86efaccc;"></div> Kamar Tidur</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#67e8f9cc;"></div> Kamar Mandi</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#fde047cc;"></div> Dapur</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#fdba74cc;"></div> Teras/Musholla</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#ef4444;"></div> Titik Kolom</div>
+  `;
+}
+
+// Layout ruangan otomatis berdasarkan dimensi
+function generateLayoutRuangan(p, l, jmlKT, jmlKM){
+  let ruangan = [];
+  let minKT = Math.min(jmlKT, 4);
+
+  // Zona A (depan, 40% panjang)
+  let zA = l*0.38;
+  ruangan.push({nama:"Teras",x:0,y:0,w:p*0.35,h:zA*0.45,warna:"#fdba74",pintu:false});
+  ruangan.push({nama:"R. Tamu",x:p*0.35,y:0,w:p*0.40,h:zA*0.55,warna:"#fcd34d",pintu:true});
+  ruangan.push({nama:"R. Keluarga",x:0,y:zA*0.45,w:p*0.55,h:zA*0.55,warna:"#fcd34d",pintu:false});
+
+  // Zona B (tengah, kamar tidur)
+  let zBTop = zA;
+  let zBH = l * 0.38;
+  let wKT = p / minKT;
+  for(let k=0;k<minKT;k++){
+    let nama = k===0 ? "KT Utama" : "KT "+(k+1);
+    ruangan.push({nama, x:k*wKT, y:zBTop, w:wKT, h:zBH, warna:"#86efac", pintu:true});
+  }
+  // KM di samping kamar terakhir (zona tengah kanan)
+  let jmlKMZona = Math.min(jmlKM, 2);
+  let hKM = zBH/jmlKMZona;
+  for(let k=0;k<jmlKMZona;k++){
+    ruangan.push({nama:"KM/WC "+(k+1),x:p*0.82,y:zBTop+k*hKM,w:p*0.18,h:hKM,warna:"#67e8f9",pintu:true});
+  }
+
+  // Zona C (belakang, dapur & service)
+  let zCTop = zA+zBH;
+  let zCH = l - zCTop;
+  ruangan.push({nama:"Dapur",x:0,y:zCTop,w:p*0.42,h:zCH,warna:"#fde047",pintu:false});
+  ruangan.push({nama:"R. Makan",x:p*0.42,y:zCTop,w:p*0.38,h:zCH,warna:"#fde047",pintu:false});
+  if(jmlKM>2){
+    ruangan.push({nama:"KM/WC 3",x:p*0.80,y:zCTop,w:p*0.20,h:zCH,warna:"#67e8f9",pintu:true});
+  } else {
+    ruangan.push({nama:"Laundry",x:p*0.80,y:zCTop,w:p*0.20,h:zCH,warna:"#a78bfa",pintu:false});
+  }
+
+  return ruangan;
+}
+
+// =========================================================
+// GENERATE DENAH AI (GEMINI)
+// =========================================================
+async function generateDenah(){
+  let apiKey = document.getElementById("geminiKey").value.trim();
+  if(!apiKey){ alert("Masukkan Gemini API Key terlebih dahulu!"); return; }
+
+  let i = getInputs();
+  let doc = document.getElementById("denahLoading");
+  doc.style.display="block";
+  document.getElementById("denahAI").innerHTML="";
+
+  let prompt = `Anda adalah arsitek profesional Indonesia berpengalaman. Buat analisis dan rancangan denah rumah lengkap berdasarkan data berikut:
+
+DATA BANGUNAN:
+- Dimensi: ${i.p}m × ${i.l}m (luas ${i.p*i.l} m²)  
+- Jumlah Lantai: ${i.lt}
+- Tinggi Dinding: ${i.t}m
+- Kamar Tidur: ${i.jmlKT} buah
+- Kamar Mandi: ${i.jmlKM} buah
+- Jenis Dinding: ${i.jenisDinding}
+- Preferensi Gaya: ${document.getElementById("preferensiDenah").value}
+- Orientasi Utama: ${document.getElementById("orientasi").value}
+- Prioritas: ${document.getElementById("prioritasRuang").value}
+- Kitchen Set: ${i.kitchenSet}
+- Kanopi: ${i.kanopi>0?i.kanopi+"m²":"Tidak"}
+
+Hasilkan dalam Bahasa Indonesia:
+
+## 1. KONSEP DESAIN
+[Jelaskan konsep denah sesuai data di atas, gaya arsitektur, dan filosofi ruang]
+
+## 2. ZONING & PEMBAGIAN RUANG
+[Bagi menjadi zona: Publik, Semi-Privat, Privat, Service. Dengan ukuran masing-masing ruangan dalam meter]
+
+## 3. TATA LETAK RUANGAN DETAIL
+[Setiap ruangan: nama, posisi (depan/tengah/belakang/kiri/kanan), ukuran, fungsi]
+Format:
+| Ruangan | Posisi | Ukuran | Luas (m²) | Fungsi |
+|---------|--------|--------|-----------|--------|
+
+## 4. SIRKULASI & PENCAHAYAAN
+[Analisis alur pergerakan penghuni, sirkulasi udara, pencahayaan alami tiap ruangan]
+
+## 5. DIMENSI RUANGAN DALAM SKALA
+[Berikan proporsi setiap ruangan dalam skala 1:100, cantumkan posisi X,Y dari sudut kiri atas dalam format JSON-like]
+Contoh format:
+- Teras: x=0, y=0, w=${(i.p*0.3).toFixed(1)}, h=${(i.l*0.15).toFixed(1)}m
+
+## 6. REKOMENDASI MATERIAL & DETAIL ARSITEKTUR
+[Material yang cocok, detail fasad, pintu-jendela, orientasi sinar matahari]
+
+## 7. PERINGATAN & CATATAN ARSITEKTURAL
+[Hal-hal penting yang perlu diperhatikan berdasarkan dimensi dan kebutuhan]
+
+Buatlah analisis yang sangat detail, presisi, dan profesional sesuai standar arsitektur Indonesia.`;
+
+  try {
+    let resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        contents:[{parts:[{text:prompt}]}],
+        generationConfig:{temperature:0.7,maxOutputTokens:3000}
+      })
+    });
+    let data = await resp.json();
+    if(data.error){ throw new Error(data.error.message); }
+    let text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Tidak ada respons dari AI.";
+    
+    // Render markdown sederhana
+    let formatted = text
+      .replace(/## (.+)/g,"<h3 style='color:#22c55e;margin:16px 0 8px;border-left:3px solid #22c55e;padding-left:8px;'>$1</h3>")
+      .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+      .replace(/\| (.+) \|/g, (m,c)=>`<tr>${c.split("|").map(x=>`<td style="border:1px solid #e2e8f0;padding:6px 10px;">${x.trim()}</td>`).join("")}</tr>`)
+      .replace(/(\n\|[-\s|]+\|\n)/g,"")
+      .replace(/^- (.+)/gm,"<li>$1</li>")
+      .replace(/\n\n/g,"<br><br>");
+
+    // Bungkus tabel
+    formatted = formatted.replace(/(<tr>.*<\/tr>\n?)+/gs, m=>`<table style="width:100%;border-collapse:collapse;margin:10px 0;">${m}</table>`);
+
+    doc.style.display="none";
+    document.getElementById("denahAI").innerHTML = `<div style="background:white;border-radius:12px;padding:20px;color:#1e293b;">${formatted}</div>`;
+    
+    // Re-gambar denah canvas setelah AI response
+    gambarDenah();
+
+  } catch(err) {
+    doc.style.display="none";
+    document.getElementById("denahAI").innerHTML = `<div class="alert alert-danger">❌ Error: ${err.message}<br>Pastikan API Key Gemini valid dan memiliki akses ke Gemini 2.0 Flash.</div>`;
+  }
+}
+
+// =========================================================
+// 20 KOMPONEN MATERIAL – LOGIKA LENGKAP SNI
+// =========================================================
+function renderMaterial20() {
+  if(!window._hasil){ alert("Hitung dulu di tab Data Input!"); return; }
+  let h = window._hasil, inp = h.inp;
+  let p=inp.p, l=inp.l, t=inp.t, lt=inp.lt;
+  let keliling=h.keliling, luasLantai=h.luasLantai, luasTotal=h.luasTotal;
+  let luasDinding=h.luasDinding, luasDindingBersih=h.luasDindingBersih;
+  let luasAtap=h.luasAtapEffektif, luasPlafon=h.luasPlafon;
+  let volCA=h.volCA, volSloof=h.volSloof, volKolom=h.volKolom, volRing=h.volRing;
+  let volPondasi=h.volPondasi;
+  let volDak = h.dakData ? h.dakData.vol : 0;
+  let koB = h.koefB; // {semen, pasir, split}
+  let idx=inp.lokasiIdx;
+
+  // ========================
+  // KOMPONEN 1: SEMEN PORTLAND
+  // ========================
+  // Semua pekerjaan beton + pasangan + plester + acian + keramik
+  let semenBeton = (volCA+volSloof+volKolom+volRing+volDak) * koB.semen;
+  let semenPondasi = volPondasi * 2.828;
+  let semenDinding = (inp.jenisDinding==="bata_merah") ? luasDindingBersih*0.2176 :
+                     (inp.jenisDinding==="batako") ? luasDindingBersih*0.1500 : 0;
+  let semenMortar  = (inp.jenisDinding==="bata_ringan") ? luasDindingBersih*0.27 : 0;
+  let semenPlester = luasDindingBersih*2 * 0.1750;
+  let semenAcian   = luasDindingBersih*2 * 0.0600;
+  let semenNat     = (luasLantai*lt+inp.jmlKM*12)*0.035;
+  let semenTotal   = Math.ceil(semenBeton+semenPondasi+semenDinding+semenMortar+semenPlester+semenAcian+semenNat);
+  let beratSemen   = semenTotal*50; // kg
+  let zak40kg      = Math.ceil(semenTotal*50/40);
+
+  // ========================
+  // KOMPONEN 2: PASIR
+  // ========================
+  let pasirBeton   = (volCA+volSloof+volKolom+volRing+volDak) * koB.pasir;
+  let pasirPondasi = volPondasi * 0.485;
+  let pasirDinding = (inp.jenisDinding==="bata_merah") ? luasDindingBersih*0.0278 :
+                     (inp.jenisDinding==="batako") ? luasDindingBersih*0.020 : 0;
+  let pasirPlester = luasDindingBersih*2 * 0.0220;
+  let pasirUrug    = luasLantai * 0.10; // urugan bawah lantai
+  let pasirTotal   = pasirBeton+pasirPondasi+pasirDinding+pasirPlester+pasirUrug;
+
+  // ========================
+  // KOMPONEN 3: BATU SPLIT / KERIKIL
+  // ========================
+  let splitBeton   = (volCA+volSloof+volKolom+volRing+volDak) * koB.split;
+  let splitTotal   = splitBeton;
+
+  // ========================
+  // KOMPONEN 4: BATU KALI / BELAH
+  // ========================
+  let batuKali     = volPondasi * 1.200;
+
+  // ========================
+  // KOMPONEN 5: BESI TULANGAN UTAMA (Dia sesuai pilihan)
+  // ========================
+  // Berat per meter besi: (D² / 162) kg/m
+  let D = inp.besiKolom;
+  let bpmBesi = (D*D)/162; // kg/m
+  // Volume beton struktural → kebutuhan besi (koef per m³)
+  let besiKolomKg  = volKolom  * 150; // kg/m³ kolom
+  let besidSloof   = volSloof  * 120;
+  let besiRingKg   = volRing   * 110;
+  let besiCAKg     = volCA     * 147;
+  let besiDakKg    = volDak    * 130;
+  let besiTotalKg  = besiKolomKg+besidSloof+besiRingKg+besiCAKg+besiDakKg;
+  let besiPanjangM = besiTotalKg / bpmBesi;
+  let besiBatang12 = Math.ceil(besiPanjangM/12); // batang @12m
+
+  // ========================
+  // KOMPONEN 6: BESI SENGKANG / WIREMESH
+  // ========================
+  let Ds = inp.besiSengkang;
+  let bpmS = (Ds*Ds)/162;
+  // Sengkang: perimeter kolom × jumlah sengkang per m
+  let dimK = inp.dimKolom.split("x").map(Number);
+  let periKolom = 2*(dimK[0]+dimK[1])/100 + 0.10; // perimeter + tekukan (m)
+  let jmlSengkangPerM = 100/15; // jarak 15cm = 6.7 bh/m
+  let totalPanjangSengkang = h.jmlKolom*(h.inp.t*lt)*jmlSengkangPerM*periKolom;
+  // Sengkang sloof & ring balok
+  let dimS = inp.dimSloof.split("x").map(Number);
+  let periSloof = 2*(dimS[0]+dimS[1])/100 + 0.10;
+  totalPanjangSengkang += keliling*lt*jmlSengkangPerM*periSloof*0.8;
+  let sengkangKg = totalPanjangSengkang * bpmS;
+  let sengkangBatang = Math.ceil(totalPanjangSengkang/12);
+
+  // ========================
+  // KOMPONEN 7: KAWAT BENDRAT
+  // ========================
+  let kawatBendrat = (besiTotalKg+sengkangKg) * 0.015; // 1.5% dari total besi
+
+  // ========================
+  // KOMPONEN 8: BATA MERAH / BATA RINGAN / BATAKO
+  // ========================
+  let bataJumlah=0, bataSatuan="";
+  if(inp.jenisDinding==="bata_merah"){
+    bataJumlah = Math.ceil(luasDindingBersih * 70); bataSatuan="buah";
+  } else if(inp.jenisDinding==="bata_ringan"){
+    bataJumlah = Math.ceil(luasDindingBersih * 8.3); bataSatuan="buah (10×20×60cm)";
+  } else {
+    bataJumlah = Math.ceil(luasDindingBersih * 12.5); bataSatuan="buah";
+  }
+
+  // ========================
+  // KOMPONEN 9: TRIPLEK / PAPAN BEKISTING
+  // ========================
+  // Luas bekisting = permukaan struktur yang dibeton
+  let luasBekKolom  = h.jmlKolom * 2*(dimK[0]+dimK[1])/100 * (h.inp.t*lt);
+  let luasBekSloof  = keliling * 2*(dimS[0]/100) * 1.2; // 2 sisi + ekstra
+  let dimR = inp.dimRing.split("x").map(Number);
+  let luasBekRing   = keliling*lt * 2*(dimR[0]/100) * 1.1;
+  let luasBekCA     = h.jmlCA * 4*(h.sCA*h.tCA);
+  let luasBekDak    = volDak>0 ? luasLantai*(lt-1)*1.2 : 0;
+  let luasBekTotal  = luasBekKolom+luasBekSloof+luasBekRing+luasBekCA+luasBekDak;
+  let triplekLbr    = Math.ceil(luasBekTotal * 0.35); // 0.35 lbr/m² (lbr 1.22×2.44m)
+  let kasoBekaBtn   = Math.ceil(luasBekTotal * 2.5); // batang 4/6
+  let pakuBek       = (luasBekTotal * 0.20).toFixed(1);
+
+  // ========================
+  // KOMPONEN 10: GENTENG / PENUTUP ATAP
+  // ========================
+  let koefGenteng = {genteng_metal:16,genteng_tanah:25,genteng_beton:10,asbes:3.5,zincalume:3.5}[inp.jenisAtap]||16;
+  let gentengJml  = Math.ceil(luasAtap * koefGenteng);
+  let gentengSat  = {genteng_metal:"lembar",genteng_tanah:"buah",genteng_beton:"buah",asbes:"lembar",zincalume:"lembar"}[inp.jenisAtap];
+  let nokJml      = Math.ceil((p+l)*0.6); // nok/bubungan
+
+  // ========================
+  // KOMPONEN 11: RANGKA ATAP (BAJA RINGAN / KAYU)
+  // ========================
+  let rangkaAtapKg=0, rangkaAtapM3=0, rangkaAtapUnit="";
+  if(inp.rangkaAtap==="baja_ringan"){
+    rangkaAtapKg = Math.ceil(luasAtap * 4.5);
+    rangkaAtapUnit = "kg baja ringan C75/C100";
+  } else if(inp.rangkaAtap.includes("kayu")){
+    rangkaAtapM3 = (luasAtap * 0.015).toFixed(2);
+    rangkaAtapUnit = "m³ kayu kuda-kuda";
+  } else {
+    rangkaAtapKg = Math.ceil(luasAtap * 6);
+    rangkaAtapUnit = "kg baja WF";
+  }
+
+  // ========================
+  // KOMPONEN 12: PLAFON (GYPSUM / KALSIBOARD / PVC)
+  // ========================
+  let plafonLbr    = Math.ceil(luasPlafon * 1.05); // 1 lbr ~2.88m²
+  let plafonHollow = Math.ceil(luasPlafon * 0.85); // batang 4m
+  let plafonSkrup  = Math.ceil(luasPlafon * 15);
+  let plafonList   = Math.ceil(keliling*lt * 1.1); // m
+
+  // ========================
+  // KOMPONEN 13: KERAMIK LANTAI & DINDING
+  // ========================
+  let keramikLantai = (luasLantai*lt*1.05).toFixed(1); // +5% waste
+  let keramikDindKM = (inp.jmlKM*12).toFixed(1);
+  let keramikTotal  = (parseFloat(keramikLantai)+parseFloat(keramikDindKM)).toFixed(1);
+  // Lem keramik & nat
+  let lemKeramik    = Math.ceil(parseFloat(keramikTotal)*0.5); // sak 5kg/m²≈0.5sak/m²
+  let natKeramik    = Math.ceil(parseFloat(keramikTotal)*0.035);
+
+  // ========================
+  // KOMPONEN 14: CAT TEMBOK & PRIMER
+  // ========================
+  let luasCatTotal = luasDindingBersih*2 + luasPlafon; // 2 sisi + plafon
+  let catTembok    = (luasCatTotal * 0.18).toFixed(1); // liter (3 lapis)
+  let catPrimer    = (luasCatTotal * 0.06).toFixed(1);
+  let kgCatTembok  = (parseFloat(catTembok)*1.3).toFixed(1); // liter → kg ≈ ×1.3
+
+  // ========================
+  // KOMPONEN 15: PINTU & KUSEN
+  // ========================
+  let pintuUtama   = 1;
+  let pintuKT      = inp.jmlKT;
+  let pintuKM      = inp.jmlKM;
+  let pintuLain    = 2;
+  let pintuTotal   = pintuUtama+pintuKT+pintuKM+pintuLain;
+  let jendelaJml   = inp.jmlKT*2+4;
+  let kusenJml     = pintuTotal+jendelaJml; // set kusen
+
+  // ========================
+  // KOMPONEN 16: INSTALASI LISTRIK
+  // ========================
+  let titikLampu   = inp.jmlKT*2+6;
+  let stopKontak   = titikLampu*2;
+  let saklar       = titikLampu;
+  let mcb          = lt>=2 ? 8 : 4;
+  let kabelNYM     = Math.ceil((luasDindingBersih/2)*2 + titikLampu*4); // m
+  let kabelNYA     = Math.ceil(kabelNYM*0.5);
+  let panelListrik = 1;
+  // Conduit PVC untuk kabel
+  let conduit      = Math.ceil(kabelNYM*0.6); // m
+
+  // ========================
+  // KOMPONEN 17: PIPA AIR BERSIH & KOTOR
+  // ========================
+  let pipaAirBersih  = Math.ceil((keliling*lt*0.5)+20); // m Ø¾" & Ø1"
+  let pipaAirKotor   = Math.ceil(inp.jmlKM*8+10);       // m Ø4"
+  let pipaAirHujan   = Math.ceil(p*2+l);                 // talang vertikal Ø3"
+  let elbow90        = Math.ceil((pipaAirBersih+pipaAirKotor)*0.2);
+  let teeJunction    = Math.ceil((pipaAirBersih+pipaAirKotor)*0.1);
+  let katupBola      = Math.ceil(inp.jmlKM*2+3);
+
+  // ========================
+  // KOMPONEN 18: SANITAIR (WC, WASTAFEL, SHOWER)
+  // ========================
+  let closetDuduk   = inp.jmlKM;
+  let wastafel      = inp.jmlKM;
+  let shower        = inp.jmlKM;
+  let floorDrain    = inp.jmlKM*2;
+  let mirrorKM      = inp.jmlKM;
+  let aksesorisKM   = inp.jmlKM; // set (sabun, handuk, dll)
+
+  // ========================
+  // KOMPONEN 19: KAYU KASO & RENG ATAP
+  // ========================
+  // Kaso 5/7 untuk dudukan genteng (jika rangka kayu)
+  let kasoAtap  = Math.ceil(luasAtap * 0.8); // batang 4m (reng+kaso)
+  let rengAtap  = Math.ceil(luasAtap * 1.6); // reng 2/3 per m²
+  let pakuAtap  = (luasAtap * 0.15).toFixed(1); // kg paku khusus atap
+
+  // ========================
+  // KOMPONEN 20: MATERIAL PELENGKAP (GROUTING, WATERPROOFING, DLL)
+  // ========================
+  let waterproofKM    = Math.ceil(inp.jmlKM*8*0.3);  // kg/m² waterproofing lantai KM
+  let waterproofDak   = volDak>0 ? Math.ceil(luasLantai*(lt-1)*0.3) : 0;
+  let expansionJoint  = Math.ceil(keliling*0.5); // m  sealant
+  let acianFlex       = Math.ceil(luasDindingBersih*0.02); // sak acian fleksibel eksterior
+  let sika            = Math.ceil((volSloof+volKolom+volRing)*2); // kg admixture
+  let pasirZero       = Math.ceil(luasDindingBersih*0.005); // m³ pasir halus acian
+  let tanahUrug       = (luasLantai * 0.30).toFixed(2); // m³ urugan tanah
+
+  // ========================
+  // BUAT HTML TABEL 20 KOMPONEN
+  // ========================
+  function kompCard(no, nama, ikon, deskripsi, rows, formula, totalLabel, totalVal, biaya){
+    let rowsHTML = rows.map(r=>`
+      <tr>
+        <td style="color:#64748b;font-size:12px;">${r[0]}</td>
+        <td style="font-family:monospace;font-size:12px;color:#22c55e;">${r[1]}</td>
+        <td style="font-size:11px;color:#94a3b8;">${r[2]}</td>
+      </tr>`).join("");
+    return `
+    <div class="mat-card" id="mat${no}">
+      <div class="mat-header">
+        <span class="mat-no">${no}</span>
+        <span class="mat-icon">${ikon}</span>
+        <div>
+          <div class="mat-nama">${nama}</div>
+          <div class="mat-desc">${deskripsi}</div>
+        </div>
+        <div class="mat-total">
+          <div style="font-size:10px;color:#94a3b8;">${totalLabel}</div>
+          <div style="font-size:1.1rem;font-weight:700;color:#22c55e;">${totalVal}</div>
+          <div style="font-size:10px;color:#64748b;">${fmtRp(biaya)}</div>
+        </div>
+      </div>
+      <table class="mat-table">
+        <thead><tr><th>Uraian Perhitungan</th><th>Nilai</th><th>Satuan</th></tr></thead>
+        <tbody>${rowsHTML}</tbody>
+      </table>
+      <div class="mat-formula">📐 <em>${formula}</em></div>
+    </div>`;
+  }
+
+  let hBesiK = [H.besi_D10,H.besi_D13,H.besi_D16,H.besi_D19][[10,13,16,19].indexOf(D)]||H.besi_D13;
+
+  let html = `
+  <style>
+    .mat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px;margin-top:12px;}
+    .mat-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;}
+    .mat-header{background:linear-gradient(135deg,#1e3a5f,#1e40af);padding:12px 14px;display:flex;align-items:flex-start;gap:10px;color:white;}
+    .mat-no{background:#22c55e;color:white;font-weight:800;font-size:1rem;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .mat-icon{font-size:1.5rem;flex-shrink:0;margin-top:2px;}
+    .mat-nama{font-weight:700;font-size:.95rem;}
+    .mat-desc{font-size:10px;opacity:.8;margin-top:2px;}
+    .mat-total{margin-left:auto;text-align:right;flex-shrink:0;}
+    .mat-table{width:100%;border-collapse:collapse;font-size:12px;}
+    .mat-table th{background:#e2e8f0;padding:5px 10px;text-align:left;font-size:11px;color:#475569;}
+    .mat-table td{border-top:1px solid #f1f5f9;padding:5px 10px;color:#1e293b;}
+    .mat-formula{background:#f0fdf4;border-top:1px solid #dcfce7;padding:8px 12px;font-size:11px;color:#15803d;}
+    .mat-summary{background:linear-gradient(135deg,#0f2a1a,#162032);border-radius:14px;padding:20px;margin-top:20px;color:white;}
+    .mat-summary h3{color:#22c55e;margin-bottom:14px;}
+    .sum-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+    .sum-item{background:#22c55e15;border:1px solid #22c55e40;border-radius:8px;padding:10px;text-align:center;}
+    .sum-item .sv{font-size:1.1rem;font-weight:700;font-family:monospace;color:#4ade80;}
+    .sum-item .sl{font-size:10px;color:#86efac;}
+    @media(max-width:600px){.mat-grid{grid-template-columns:1fr;}}
+  </style>
+
+  <div class="mat-grid">
+  ${kompCard(1,"SEMEN PORTLAND","🏭",
+    "Untuk semua pekerjaan beton, pasangan, plester, acian & nat keramik",
+    [
+      ["Beton Struktural (footplate+sloof+kolom+ring+dak)", Math.ceil(semenBeton), "sak @50kg"],
+      ["Pondasi Batu Kali 1:3", Math.ceil(semenPondasi), "sak"],
+      ["Pasangan Dinding", Math.ceil(semenDinding+semenMortar), "sak"],
+      ["Plesteran 1:4 (2 sisi)", Math.ceil(semenPlester), "sak"],
+      ["Acian Semen", Math.ceil(semenAcian), "sak"],
+      ["Nat Keramik", Math.ceil(semenNat), "sak"],
+      ["Berat total", fmtN(beratSemen/1000,2), "ton"],
+      ["Ekuivalen sak 40kg", zak40kg, "sak @40kg"],
+    ],
+    "Vol. beton × koef SNI (fc21=7.98 sak/m³) + dinding × 0.218 + plester × 0.175 + acian × 0.06",
+    "TOTAL SEMEN", semenTotal+" sak @50kg", semenTotal*H.semen
+  )}
+
+  ${kompCard(2,"PASIR (Pasang + Beton + Plester + Urug)","🏖️",
+    "Pasir pasang untuk dinding & pondasi, pasir beton untuk cor, pasir plester untuk finishing",
+    [
+      ["Pasir Beton (beton struktural)", fmtN(pasirBeton,2), "m³"],
+      ["Pasir Pondasi 1:3", fmtN(pasirPondasi,2), "m³"],
+      ["Pasir Pasang Dinding", fmtN(pasirDinding,2), "m³"],
+      ["Pasir Plester (2 sisi)", fmtN(pasirPlester,2), "m³"],
+      ["Pasir Urug Lantai (t=10cm)", fmtN(pasirUrug,2), "m³"],
+      ["Berat Estimasi", fmtN(pasirTotal*1.6,1), "ton (SSD)"],
+    ],
+    "V_beton×0.623 + V_pondasi×0.485 + A_dinding×0.028 + A_plester×0.022 + A_lantai×0.10",
+    "TOTAL PASIR", fmtN(pasirTotal,2)+" m³", pasirTotal*H.pasir_beton
+  )}
+
+  ${kompCard(3,"BATU SPLIT / KERIKIL 2-3 cm","🪨",
+    "Agregat kasar untuk semua pekerjaan beton bertulang (footplate, sloof, kolom, ring, dak)",
+    [
+      ["Footplate Cakar Ayam "+h.jmlCA+" titik", fmtN(volCA*koB.split,2), "m³"],
+      ["Sloof Beton", fmtN(volSloof*koB.split,2), "m³"],
+      ["Kolom Praktis", fmtN(volKolom*koB.split,2), "m³"],
+      ["Ring Balok", fmtN(volRing*koB.split,2), "m³"],
+      ...(volDak>0?[["Dak Beton Lantai",fmtN(volDak*koB.split,2),"m³"]]:[]),
+      ["Total Volume Beton", fmtN(volCA+volSloof+volKolom+volRing+volDak,2), "m³"],
+    ],
+    "V_beton_total × 0.958 (koef SNI fc'21) — split 2/3 ukuran 10-20mm",
+    "TOTAL SPLIT", fmtN(splitTotal,2)+" m³", splitTotal*H.split
+  )}
+
+  ${kompCard(4,"BATU KALI / BELAH 15-20 cm","🗿",
+    "Material utama pondasi batu kali dengan campuran 1:3 (semen:pasir)",
+    [
+      ["Volume Pondasi", fmtN(volPondasi,2), "m³"],
+      ["Keliling Bangunan", fmtN(keliling,1), "m"],
+      ["Lebar Pondasi", "60", "cm"],
+      ["Kedalaman Pondasi", inp.dalamPondasi, "m"],
+      ["Faktor Pembesaran Tanah", {keras:"1.0×",sedang:"1.2×",lunak:"1.6×"}[inp.jenisTanah], ""],
+      ["Koefisien batu kali", "1.200 m³/m³", "(SNI 03-2835)"],
+    ],
+    "V_pondasi × 1.200 (koef batu) | V_pondasi = keliling × 0.60 × kedalaman × f_tanah",
+    "TOTAL BATU KALI", fmtN(batuKali,2)+" m³", batuKali*H.batu_kali
+  )}
+
+  ${kompCard(5,"BESI TULANGAN UTAMA D"+D,"🔩",
+    "Tulangan longitudinal untuk kolom, sloof, ring balok, footplate & pelat dak",
+    [
+      ["Berat per meter D"+D, fmtN(bpmBesi,4), "kg/m"],
+      ["Besi Kolom (150 kg/m³)", fmtN(besiKolomKg,1), "kg"],
+      ["Besi Sloof (120 kg/m³)", fmtN(besidSloof,1), "kg"],
+      ["Besi Ring Balok (110 kg/m³)", fmtN(besiRingKg,1), "kg"],
+      ["Besi Footplate (147 kg/m³)", fmtN(besiCAKg,1), "kg"],
+      ...(volDak>0?[["Besi Pelat Dak (130 kg/m³)",fmtN(besiDakKg,1),"kg"]]:[]),
+      ["Total Panjang", fmtN(besiPanjangM,1), "m"],
+      ["Jumlah Batang @12m", besiBatang12, "batang"],
+    ],
+    "Berat = Volume_beton × koef_besi | Panjang = Berat ÷ (D²÷162) | Batang = ceil(Panjang÷12)",
+    "TOTAL BESI D"+D, besiTotalKg.toFixed(0)+" kg", besiTotalKg*hBesiK
+  )}
+
+  ${kompCard(6,"BESI SENGKANG / BEUGEL Ø"+inp.besiSengkang,"🔗",
+    "Tulangan geser untuk kolom & balok, jarak 10cm (zona tumpuan) & 15cm (zona lapangan)",
+    [
+      ["Diameter Sengkang", "Ø"+inp.besiSengkang, "mm"],
+      ["Berat per meter", fmtN(bpmS,5), "kg/m"],
+      ["Perimeter Kolom "+inp.dimKolom, fmtN(periKolom,3), "m/sengkang"],
+      ["Jarak Sengkang rata-rata", "15", "cm (6.7 bh/m)"],
+      ["Jumlah Kolom", h.jmlKolom, "titik"],
+      ["Total Panjang Sengkang", fmtN(totalPanjangSengkang,1), "m"],
+      ["Jumlah Batang @12m", sengkangBatang, "batang"],
+    ],
+    "Panjang = jml_kolom × tinggi × (100/15) × perimeter_kolom + sengkang_sloof_ring",
+    "TOTAL SENGKANG Ø"+inp.besiSengkang, fmtN(sengkangKg,1)+" kg", sengkangKg*H.besi_sengkang
+  )}
+
+  ${kompCard(7,"KAWAT BENDRAT / PENGIKAT","🧵",
+    "Kawat lunak Ø1mm untuk mengikat persilangan besi tulangan (1.5% dari total besi)",
+    [
+      ["Total besi tulangan", fmtN(besiTotalKg+sengkangKg,1), "kg"],
+      ["Koefisien kawat bendrat", "1.5%", "dari total besi"],
+      ["Estimasi titik ikat", Math.ceil(kawatBendrat/0.003), "titik"],
+      ["Panjang per ikatan", "~30", "cm (2 lipatan)"],
+    ],
+    "Kawat = (besi_utama + sengkang) × 0.015",
+    "TOTAL KAWAT BENDRAT", fmtN(kawatBendrat,1)+" kg", kawatBendrat*H.kawat_bendrat
+  )}
+
+  ${kompCard(8,{bata_merah:"BATA MERAH",bata_ringan:"BATA RINGAN AAC (HEBEL)",batako:"BATAKO PRESS"}[inp.jenisDinding],"🧱",
+    {bata_merah:"5×11×22 cm, campuran 1:4, SNI 15-2094-2000",bata_ringan:"10×20×60 cm, mortar instan khusus AAC",batako:"30×15×10 cm, press hidraulis"}[inp.jenisDinding],
+    [
+      ["Luas Dinding Total", fmtN(luasDinding,1), "m²"],
+      ["Luas Bukaan Pintu+Jendela (20%)", fmtN(luasDinding*0.20,1), "m²"],
+      ["Luas Dinding Bersih", fmtN(luasDindingBersih,1), "m²"],
+      ["Koefisien",{bata_merah:"70 bh/m²",bata_ringan:"8.3 bh/m²",batako:"12.5 bh/m²"}[inp.jenisDinding],"SNI 7394:2008"],
+      ["Waste / Pecahan", "5%", "tambahan"],
+    ],
+    {bata_merah:"Jml = A_dinding × 70 bh/m²",bata_ringan:"Jml = A_dinding × 8.3 bh/m² (AAC)",batako:"Jml = A_dinding × 12.5 bh/m²"}[inp.jenisDinding],
+    {bata_merah:"TOTAL BATA MERAH",bata_ringan:"TOTAL BATA RINGAN",batako:"TOTAL BATAKO"}[inp.jenisDinding],
+    bataJumlah+" "+bataSatuan,
+    {bata_merah:bataJumlah*H.bata_merah,bata_ringan:bataJumlah*H.bata_ringan,batako:bataJumlah*H.batako}[inp.jenisDinding]
+  )}
+
+  ${kompCard(9,"TRIPLEK BEKISTING & KAYU KASO","🪵",
+    "Bekisting untuk cetak semua elemen beton (kolom, sloof, ring balok, footplate, dak)",
+    [
+      ["Luas Bekisting Kolom", fmtN(luasBekKolom,2), "m²"],
+      ["Luas Bekisting Sloof", fmtN(luasBekSloof,2), "m²"],
+      ["Luas Bekisting Ring Balok", fmtN(luasBekRing,2), "m²"],
+      ["Luas Bekisting Footplate", fmtN(luasBekCA,2), "m²"],
+      ...(volDak>0?[["Bekisting Dak Beton",fmtN(luasBekDak,2),"m²"]]:[]),
+      ["Total Luas Bekisting", fmtN(luasBekTotal,2), "m²"],
+      ["Triplek 12mm (1 lbr=2.97m²)", triplekLbr, "lembar 1.22×2.44m"],
+      ["Kayu Kaso 4/6 (0.8m²/btg)", kasoBekaBtn, "batang 4m"],
+      ["Paku Campur", pakuBek, "kg"],
+    ],
+    "A_bekisting = keliling × dimensi × koef | Triplek = A_bek × 0.35 lbr/m²",
+    "TRIPLEK BEKISTING", triplekLbr+" lembar", triplekLbr*H.bekisting_triplek + kasoBekaBtn*H.bekisting_kaso
+  )}
+
+  ${kompCard(10,"GENTENG / PENUTUP ATAP","🏠",
+    {genteng_metal:"Genteng Metal Pasir (7 kg/m²), tahan karat, ringan",genteng_tanah:"Genteng Tanah Liat (50 kg/m²), tradisional",genteng_beton:"Genteng Beton (40 kg/m²), kokoh",asbes:"Asbes Gelombang BJLS (15 kg/m²)",zincalume:"Zincalume/Spandek (10 kg/m²)"}[inp.jenisAtap],
+    [
+      ["Luas Lantai", fmtN(luasLantai,1), "m²"],
+      ["Faktor Kemiringan Atap 25°", "×1.25", "→ "+fmtN(luasAtap,1)+" m²"],
+      ["Koefisien", koefGenteng, gentengSat+"/m²"],
+      ["Nok/Bubungan", nokJml, "buah/m"],
+      ["Talang Horizontal PVC", Math.ceil(p*2), "m"],
+      ["Beban Atap", {genteng_metal:"7",genteng_tanah:"50",genteng_beton:"40",asbes:"15",zincalume:"10"}[inp.jenisAtap], "kg/m²"],
+    ],
+    "Jml = luas_lantai × 1.25 (kemiringan) × koef_genteng",
+    "TOTAL GENTENG", gentengJml+" "+gentengSat, gentengJml*H["genteng_"+inp.jenisAtap.split("_")[1]]||gentengJml*H.genteng_metal_lbr
+  )}
+
+  ${kompCard(11,"RANGKA ATAP",{baja_ringan:"⚙️",kayu_kelas_1:"🌳",kayu_kelas_2:"🌲",baja_wf:"🔧"}[inp.rangkaAtap],
+    {baja_ringan:"Baja Ringan Galvanis C75/C100 SNI 4096:2007",kayu_kelas_1:"Kayu Kelas I (Jati/Merbau/Ulin)",kayu_kelas_2:"Kayu Kelas II (Kamper/Bangkirai)",baja_wf:"Baja WF Profil untuk bentang >10m"}[inp.rangkaAtap],
+    [
+      ["Luas Atap Efektif", fmtN(luasAtap,1), "m²"],
+      ["Jenis Rangka", inp.rangkaAtap.replace("_"," "), ""],
+      ...(inp.rangkaAtap==="baja_ringan"?[
+        ["Koefisien baja ringan","4.5 kg/m²","C75 termasuk reng"],
+        ["Total baja ringan",rangkaAtapKg,"kg"],
+        ["Jumlah batang @6m",Math.ceil(rangkaAtapKg/6),"btg (±1 kg/m)"],
+      ]:[
+        ["Koefisien kayu","0.015 m³/m²","termasuk kuda-kuda+usuk"],
+        ["Volume kayu",rangkaAtapM3,"m³"],
+        ["Reng 2/3 atap",Math.ceil(luasAtap*1.6),"batang 4m"],
+      ]),
+      ["Baut/Mur/Dynabolt rangka", Math.ceil(luasAtap*1.5), "bh"],
+    ],
+    inp.rangkaAtap==="baja_ringan"?"Berat = luas_atap × 4.5 kg/m² (termasuk reng + sambungan screw)":"Vol = luas_atap × 0.015 m³/m²",
+    "TOTAL RANGKA", (rangkaAtapKg?rangkaAtapKg+" kg":rangkaAtapM3+" m³")+" "+rangkaAtapUnit, h.rangkaAtapBiaya*idx
+  )}
+
+  ${kompCard(12,"PLAFON & HOLLOW","✨",
+    {gypsum:"Gypsum Board 9mm (1.2×2.4m=2.88m²/lbr) + Hollow 40×40",kalsiboard:"Kalsiboard 4mm tahan air + Hollow 40×40",pvc:"Panel PVC langit-langit (lebar 20cm)",triplek:"Triplek 4mm + Hollow 40×40"}[inp.jenisPlafon],
+    [
+      ["Luas Plafon", fmtN(luasPlafon,1), "m²"],
+      [{gypsum:"Gypsum 9mm",kalsiboard:"Kalsiboard 4mm",pvc:"Panel PVC",triplek:"Triplek 4mm"}[inp.jenisPlafon]+" (koef 1.05)", plafonLbr, "lembar"],
+      ["Hollow 40×40 4m (0.85 btg/m²)", plafonHollow, "batang"],
+      ["Skrup Gypsum/Hollow (15 bh/m²)", plafonSkrup, "buah"],
+      ["List Profil Pinggir", plafonList, "m"],
+      ["Joint Compound/Compound", Math.ceil(luasPlafon*0.1), "kg"],
+    ],
+    "Lbr = luas_plafon × 1.05 (waste 5%) | Hollow = luas × 0.85 btg/m²",
+    "TOTAL PLAFON", plafonLbr+" lbr + "+plafonHollow+" hollow", h.plafonBiaya
+  )}
+
+  ${kompCard(13,"KERAMIK LANTAI & DINDING","🪨",
+    {["40x40"]:"Keramik Standar 40×40cm (6.25 bh/m²)",["60x60"]:"Keramik Premium 60×60cm (2.78 bh/m²)",granite:"Granit 60×60cm (2.78 bh/m²)"}[inp.jenisKeramik],
+    [
+      ["Luas Lantai ×"+lt+" lantai (+5% waste)", keramikLantai, "m²"],
+      ["Keramik Dinding KM ("+inp.jmlKM+" unit × 12m²)", keramikDindKM, "m²"],
+      ["Total Keramik", keramikTotal, "m²"],
+      ["Jumlah Keping", Math.ceil(parseFloat(keramikTotal)*{["40x40"]:6.25,["60x60"]:2.78,granite:2.78}[inp.jenisKeramik]).toLocaleString("id-ID"), "buah"],
+      ["Lem Keramik (0.5 sak/m²)", lemKeramik, "sak 5kg"],
+      ["Semen Nat (0.035 sak/m²)", natKeramik, "sak"],
+    ],
+    "Jml_keping = luas × (100/P × 100/L) | +5% waste | Lem = luas × 0.5 sak",
+    "TOTAL KERAMIK", keramikTotal+" m²", h.biayaKeramik
+  )}
+
+  ${kompCard(14,"CAT TEMBOK (DALAM + LUAR + PLAFON)","🎨",
+    {ekonomis:"Cat Ekonomis (Vinilex/Mowilex) 3 lapis",medium:"Cat Medium (Dulux/Nippon Paint) 3 lapis",premium:"Cat Premium (Jotun/Propan) 3 lapis"}[inp.jenisCat],
+    [
+      ["Luas Dinding Bersih (2 sisi)", fmtN(luasDindingBersih*2,1), "m²"],
+      ["Luas Plafon", fmtN(luasPlafon,1), "m²"],
+      ["Total Luas Cat", fmtN(luasCatTotal,1), "m²"],
+      ["Cat Tembok (0.18 liter/m²)", catTembok, "liter ≈ "+kgCatTembok+" kg"],
+      ["Cat Dasar/Primer (0.06 liter/m²)", catPrimer, "liter"],
+      ["Ampelas", Math.ceil(luasCatTotal*0.02), "lembar"],
+      ["Plamir/Dempul (0.05 kg/m²)", Math.ceil(luasCatTotal*0.05), "kg"],
+    ],
+    "Cat = luas_total × 0.18 liter/m² (3 lapis) | Primer = luas × 0.06 liter/m²",
+    "TOTAL CAT", catTembok+" liter", h.biayaCat
+  )}
+
+  ${kompCard(15,"PINTU, JENDELA & KUSEN","🚪",
+    "Pintu kayu solid + kusen kayu/aluminium + jendela minimalis",
+    [
+      ["Pintu Utama (kayu solid+kaca)", pintuUtama, "set"],
+      ["Pintu Kamar Tidur", pintuKT, "set"],
+      ["Pintu Kamar Mandi PVC/Fiber", pintuKM, "set"],
+      ["Pintu Lain-lain (dapur, dll)", pintuLain, "set"],
+      ["TOTAL PINTU", pintuTotal, "set"],
+      ["Jendela Aluminium", jendelaJml, "buah"],
+      ["Kusen Total (pintu+jendela)", kusenJml, "set"],
+      ["Handle Pintu", pintuTotal, "set"],
+      ["Engsel Pintu (2/pintu)", pintuTotal*2, "pasang"],
+      ["Kunci Pintu", pintuTotal, "buah"],
+    ],
+    "Pintu = 1 utama + jmlKT kamar tidur + jmlKM kamar mandi + 2 lain | Jendela = jmlKT×2+4",
+    "TOTAL PINTU+JENDELA", pintuTotal+" pintu, "+jendelaJml+" jendela", h.biayaPintuTotal
+  )}
+
+  ${kompCard(16,"INSTALASI LISTRIK (MEE)","⚡",
+    "Instalasi daya "+inp.jenisListrik+" VA sesuai standar PLN & PUIL 2011",
+    [
+      ["Daya Listrik", inp.jenisListrik, "VA"],
+      ["Titik Lampu (jmlKT×2+6)", titikLampu, "titik"],
+      ["Lampu LED 9W", titikLampu, "buah"],
+      ["Stop Kontak (2×titik lampu)", stopKontak, "buah"],
+      ["Saklar Tunggal/Ganda", saklar, "buah"],
+      ["MCB (Circuit Breaker)", mcb, "buah"],
+      ["Kabel NYM 2×2.5mm²", kabelNYM, "m"],
+      ["Kabel NYA 1.5mm² (ground)", kabelNYA, "m"],
+      ["Pipa Conduit PVC 5/8\"", conduit, "m"],
+      ["Panel Listrik (MCB Box)", panelListrik, "unit"],
+    ],
+    "Titik = jmlKT×2+6 | Kabel = (A_dinding/2)×2 + titik×4 | Stop = titik×2",
+    "TOTAL LISTRIK", titikLampu+" titik, "+kabelNYM+"m kabel", h.biayaListrik
+  )}
+
+  ${kompCard(17,"PIPA AIR BERSIH & KOTOR","🚿",
+    "Jaringan distribusi air bersih (PVC-10) dan pembuangan (PVC-D) + talang hujan",
+    [
+      ["Pipa Air Bersih Ø¾\"-1\" (PVC-10)", pipaAirBersih, "m"],
+      ["Pipa Air Kotor Ø4\" (PVC-D)", pipaAirKotor, "m"],
+      ["Pipa Talang Hujan Ø3\"", pipaAirHujan, "m"],
+      ["Elbow 90° (20% pipa)", elbow90, "buah"],
+      ["Tee Junction (10% pipa)", teeJunction, "buah"],
+      ["Ball Valve / Katup Bola", katupBola, "buah"],
+      ["Lem Pipa PVC", Math.ceil((pipaAirBersih+pipaAirKotor)*0.05), "kaleng"],
+      ["Septictank", {bio:"Biotank 1 unit",bata:"Bata Cor 1 unit",tidak:"Tidak (IPAL ada)"}[inp.septictank], ""],
+    ],
+    "L_air_bersih = keliling×lt×0.5+20 | L_kotor = jmlKM×8+10 | Elbow = L×0.20",
+    "TOTAL PIPA", pipaAirBersih+"m air bersih + "+pipaAirKotor+"m kotor", h.biayaSanitasi
+  )}
+
+  ${kompCard(18,"SANITAIR (WC, WASTAFEL, SHOWER)","🚽",
+    "Perlengkapan kamar mandi per unit × jumlah kamar mandi = "+inp.jmlKM+" KM",
+    [
+      ["Closet Duduk Keramik", closetDuduk, "unit"],
+      ["Wastafel + Kran", wastafel, "unit"],
+      ["Shower Set", shower, "unit"],
+      ["Floor Drain (2/KM)", floorDrain, "buah"],
+      ["Cermin KM", mirrorKM, "buah"],
+      ["Aksesoris KM (set: sabun, gantung handuk)", aksesorisKM, "set"],
+      ["Kran Air Dinding (2/KM)", inp.jmlKM*2, "buah"],
+      ["Flexible Hose", inp.jmlKM, "buah"],
+    ],
+    "Semua sanitair dihitung per unit kamar mandi × jumlah KM",
+    "TOTAL SANITAIR", inp.jmlKM+" kamar mandi lengkap", inp.jmlKM*(H.closet_duduk+H.wastafel+H.shower+H.floor_drain*2)
+  )}
+
+  ${kompCard(19,"KAYU KASO, RENG & PAKU ATAP","🪵",
+    "Material kayu pendukung atap: kaso 5/7 (dudukan genteng) & reng 2/3 (pengikat genteng)",
+    [
+      ["Luas Atap Efektif", fmtN(luasAtap,1), "m²"],
+      ["Kaso 5/7 cm (0.8 btg/m²)", kasoAtap, "batang @4m"],
+      ["Reng 2/3 cm (1.6 btg/m²)", rengAtap, "batang @4m"],
+      ["Paku Atap Galvanis 2\"-3\"", pakuAtap, "kg"],
+      ["Baut/Skrup kait genteng", Math.ceil(luasAtap*2), "buah"],
+      ["Catatan", "Jika rangka baja ringan,", "kaso/reng tidak diperlukan"],
+    ],
+    "Kaso = luas_atap × 0.8 btg/m² | Reng = luas × 1.6 btg/m² (jarak 25cm antar reng)",
+    "TOTAL KASO+RENG", kasoAtap+" kaso, "+rengAtap+" reng", (kasoAtap+rengAtap)*H.bekisting_kaso*0.5+parseFloat(pakuAtap)*H.bekisting_paku
+  )}
+
+  ${kompCard(20,"MATERIAL PELENGKAP & WATERPROOFING","🛡️",
+    "Waterproofing KM & dak, admixture beton, urugan tanah, sealant & material khusus",
+    [
+      ["Waterproofing KM (lantai+dinding)", waterproofKM, "kg (0.3kg/m²)"],
+      ...(volDak>0?[["Waterproofing Dak Beton",waterproofDak,"kg (0.3kg/m²)"]]:[]),
+      ["Sealant / Expansion Joint", expansionJoint, "m (silikon)"],
+      ["Acian Elastis Eksterior", acianFlex, "sak"],
+      ["Admixture/Sika (2kg/m³ beton)", sika, "kg"],
+      ["Pasir Halus Acian (0.005m³/m²)", fmtN(parseFloat(pasirZero),3), "m³"],
+      ["Tanah Urug Lantai (t=30cm)", tanahUrug, "m³"],
+      ["Plastik Cor Ø0.2mm", Math.ceil(luasLantai*1.1), "m²"],
+      ["Curing Compound Beton", Math.ceil((volCA+volSloof+volKolom+volRing+volDak)*10), "liter"],
+    ],
+    "Waterproofing = A_KM × 0.3kg/m² + A_dak × 0.3kg/m² | Urugan = luas × 0.30m tebal",
+    "TOTAL PELENGKAP", waterproofKM+waterproofDak+" kg WP + "+tanahUrug+"m³ urug", (waterproofKM+waterproofDak)*35000+parseFloat(tanahUrug)*85000+sika*12000
+  )}
+  </div><!-- /mat-grid -->
+
+  <!-- ===== SUMMARY 20 KOMPONEN ===== -->
+  <div class="mat-summary" style="margin-top:20px;">
+    <h3>📊 REKAP TOTAL 20 KOMPONEN MATERIAL</h3>
+    <div class="sum-grid">
+      <div class="sum-item"><div class="sv">${semenTotal}</div><div class="sl">Semen (sak @50kg)</div></div>
+      <div class="sum-item"><div class="sv">${fmtN(pasirTotal,1)}</div><div class="sl">Pasir (m³)</div></div>
+      <div class="sum-item"><div class="sv">${fmtN(splitTotal,1)}</div><div class="sl">Split/Kerikil (m³)</div></div>
+      <div class="sum-item"><div class="sv">${fmtN(batuKali,1)}</div><div class="sl">Batu Kali (m³)</div></div>
+      <div class="sum-item"><div class="sv">${fmtN(besiTotalKg,0)}</div><div class="sl">Besi D${D} (kg)</div></div>
+      <div class="sum-item"><div class="sv">${besiBatang12}</div><div class="sl">Batang Besi @12m</div></div>
+      <div class="sum-item"><div class="sv">${fmtN(sengkangKg,0)}</div><div class="sl">Sengkang Ø${inp.besiSengkang} (kg)</div></div>
+      <div class="sum-item"><div class="sv">${fmtN(kawatBendrat,1)}</div><div class="sl">Kawat Bendrat (kg)</div></div>
+      <div class="sum-item"><div class="sv">${bataJumlah.toLocaleString("id-ID")}</div><div class="sl">${{bata_merah:"Bata Merah",bata_ringan:"Bata Ringan",batako:"Batako"}[inp.jenisDinding]} (bh)</div></div>
+      <div class="sum-item"><div class="sv">${triplekLbr}</div><div class="sl">Triplek 12mm (lbr)</div></div>
+      <div class="sum-item"><div class="sv">${gentengJml.toLocaleString("id-ID")}</div><div class="sl">Genteng (${gentengSat})</div></div>
+      <div class="sum-item"><div class="sv">${rangkaAtapKg||rangkaAtapM3+" m³"}</div><div class="sl">Rangka Atap ${rangkaAtapKg?"(kg)":""}</div></div>
+      <div class="sum-item"><div class="sv">${plafonLbr}</div><div class="sl">Plafon (lbr)</div></div>
+      <div class="sum-item"><div class="sv">${keramikTotal}</div><div class="sl">Keramik (m²)</div></div>
+      <div class="sum-item"><div class="sv">${catTembok}</div><div class="sl">Cat Tembok (liter)</div></div>
+      <div class="sum-item"><div class="sv">${pintuTotal}</div><div class="sl">Pintu (set)</div></div>
+      <div class="sum-item"><div class="sv">${titikLampu}</div><div class="sl">Titik Lampu</div></div>
+      <div class="sum-item"><div class="sv">${kabelNYM}</div><div class="sl">Kabel NYM (m)</div></div>
+      <div class="sum-item"><div class="sv">${pipaAirBersih+pipaAirKotor}</div><div class="sl">Pipa Total (m)</div></div>
+      <div class="sum-item"><div class="sv">${inp.jmlKM}</div><div class="sl">Set Sanitair Lengkap</div></div>
+    </div>
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid #22c55e40;font-size:11px;color:#86efac;line-height:1.9;">
+      📐 <strong>Metode Perhitungan:</strong> SNI 7394:2008 (Analisa Harga Satuan Pekerjaan) · SNI 2847:2019 (Beton Struktural) · SNI 03-2835-2002 (Pondasi)<br>
+      🏗️ <strong>Powered by Kontraktor ArkiDigital</strong> | Indeks Lokasi: ${idx} | Bangunan: ${p}m × ${l}m × ${lt} lantai = ${fmtN(luasTotal,0)} m²<br>
+      ⚠️ Angka merupakan estimasi. Lakukan survey material lokal sebelum pembelian. Tambahkan 5–10% waste untuk semua material.
+    </div>
+  </div>`;
+
+  document.getElementById("material20Content").innerHTML = html;
+}
+
+window.onload = function(){
+  // Enter key login
+  ["inpUser","inpPass"].forEach(id=>{
+    document.getElementById(id).addEventListener("keypress",e=>{if(e.key==="Enter")doLogin();});
+  });
+};
+</script>
+</body>
+</html>
